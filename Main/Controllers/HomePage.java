@@ -4,11 +4,13 @@ import UserDetails.Employee;
 import UserDetails.Student;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+import java.io.IOException;
 
 import static java.lang.Integer.parseInt;
 
@@ -36,49 +38,15 @@ public class HomePage {
         }
     }
 
-    public void DBConnect(){
-        Connection c = null;
+    public void DBConnect() throws IOException {
+        Stage stage = (Stage) UID.getScene().getWindow();
 
-        Employee employee = new Employee("test","test", false, 123);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(SceneController.class.getResource("/fxml/questionView.fxml"));
+        Parent root = loader.load();
 
-        /* Select * for lateer
-        try{
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
-            c.setAutoCommit(false);
-            System.out.println("Opened database successfully");
-
-            Statement statement = c.createStatement();
-            ResultSet rs = statement.executeQuery("Select * from user;");
-
-            while (rs.next()){
-                System.out.println(rs.getString("firstName"));
-            }
-            System.out.println("end");
-        } catch ( Exception e ) {
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }*/
-
-        try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
-            c.setAutoCommit(false);
-            System.out.println("DBConnected");
-            PreparedStatement statement = c.prepareStatement("INSERT INTO user (firstName,surname,isEmployee) VALUES(?, ?, ?);");
-            statement.setString(1,employee.firstName);
-            statement.setString(2,employee.surname);
-            statement.setInt(3,1);
-            statement.execute();
-            c.commit();
-            c.close();
-        } catch ( Exception e ) {
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
-        System.out.println("Should have pushed data");
-
-
+        stage.setScene(new Scene(root));
 
     }
+
 }
