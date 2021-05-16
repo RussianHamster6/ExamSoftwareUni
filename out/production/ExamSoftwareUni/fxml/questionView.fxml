@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.QuestionView">
+   <children>
+      <TableView fx:id="QTable" layoutX="73.0" layoutY="64.0" prefHeight="272.0" prefWidth="470.0">
+        <columns>
+          <TableColumn fx:id="QIDCol" prefWidth="75.0" text="QuestionID" />
+          <TableColumn fx:id="DescCol" prefWidth="75.0" text="decription" />
+            <TableColumn fx:id="QTypeCol" prefWidth="75.0" text="questionType" />
+            <TableColumn fx:id="AnsCol" prefWidth="75.0" text="answer" />
+            <TableColumn fx:id="PointsCol" prefWidth="75.0" text="Points" />
+            <TableColumn fx:id="TagCol" prefWidth="75.0" text="Tags" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>

@@ -8,7 +8,7 @@ public class ExamSoftwareUni extends Application {
 
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/fxml/HomePage.fxml"));
+        loader.setLocation(getClass().getResource("/fxml/questionCreate.fxml"));
         Parent root = loader.load();
 
         primaryStage.setTitle("Exams Software");
