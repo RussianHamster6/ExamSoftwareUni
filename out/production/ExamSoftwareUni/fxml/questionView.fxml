@@ -3,11 +3,12 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane prefHeight="400.0" prefWidth="624.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.QuestionView">
    <children>
-      <TableView fx:id="QTable" layoutX="20.0" layoutY="64.0" prefHeight="272.0" prefWidth="470.0">
+      <TableView fx:id="QTable" layoutX="20.0" layoutY="64.0" onMouseClicked="#editQuestion" prefHeight="272.0" prefWidth="470.0">
         <columns>
           <TableColumn fx:id="QIDCol" prefWidth="75.0" text="QuestionID" />
           <TableColumn fx:id="DescCol" prefWidth="75.0" text="decription" />
@@ -17,6 +18,8 @@
             <TableColumn fx:id="TagCol" prefWidth="75.0" text="Tags" />
         </columns>
       </TableView>
-      <Button layoutX="513.0" layoutY="64.0" mnemonicParsing="false" prefHeight="56.0" prefWidth="97.0" text="Add" onAction="#addQuestion"/>
+      <Button layoutX="513.0" layoutY="64.0" mnemonicParsing="false" onAction="#addQuestion" prefHeight="56.0" prefWidth="97.0" text="Add" />
+      <TextField layoutX="20.0" layoutY="24.0" prefHeight="25.0" prefWidth="470.0" fx:id="searchText" />
+      <Button layoutX="513.0" layoutY="24.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="97.0" text="Search" />
    </children>
 </AnchorPane>
