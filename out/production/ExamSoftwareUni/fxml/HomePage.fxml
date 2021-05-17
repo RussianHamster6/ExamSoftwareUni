@@ -8,10 +8,8 @@
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.HomePage">
    <children>
       <Text layoutX="238.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="THIS IS MY HOMEPAGE" />
-      <Button layoutX="80.0" layoutY="200.0" mnemonicParsing="false" onAction="#stuLogin" prefHeight="115.0" prefWidth="158.0" text="Student Login" />
-      <Button layoutX="362.0" layoutY="200.0" mnemonicParsing="false" onAction="#empLogin" prefHeight="115.0" prefWidth="158.0" text="Staff Login" />
+      <Button layoutX="222.0" layoutY="200.0" mnemonicParsing="false" onAction="#Login" prefHeight="115.0" prefWidth="158.0" text="Login" />
       <TextField fx:id="UID" layoutX="153.0" layoutY="142.0" prefHeight="25.0" prefWidth="295.0" />
       <Text layoutX="153.0" layoutY="130.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter your UID: " wrappingWidth="124.388671875" />
-      <Button layoutX="448.0" layoutY="34.0" mnemonicParsing="false" onAction="#DBConnect" prefHeight="83.0" prefWidth="113.0" text="SQLCONNECT" />
    </children>
 </AnchorPane>

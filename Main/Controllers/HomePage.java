@@ -2,6 +2,8 @@ package Controllers;
 
 import UserDetails.Employee;
 import UserDetails.Student;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,33 +22,37 @@ public class HomePage {
     @FXML
     private TextField UID;
 
+    public void initialize() {
+        UID.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue,
+                                String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    UID.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
+    }
+
+
     @FXML
-    public void stuLogin(ActionEvent event){
+    public void Login(ActionEvent event) throws IOException {
         Student student = new Student("test","test", false, 123);
+        Employee employee = new Employee("test","test", true, 1234);
 
-        if(student.stuNumber == parseInt(UID.getText())){
-            System.out.println("I be Student");
+        if(student.stuNumber == parseInt(UID.getText()) || employee.empNumber == parseInt(UID.getText())){
+            loginSuccess();
         }
     }
 
-    public void empLogin(ActionEvent event){
-        Employee employee = new Employee("test","test", false, 123);
-
-        if(employee.empNumber == parseInt(UID.getText())){
-            //Change page to Employee view
-            System.out.println("I be Staff");
-        }
-    }
-
-    public void DBConnect() throws IOException {
+    private void loginSuccess() throws IOException {
         Stage stage = (Stage) UID.getScene().getWindow();
 
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(SceneController.class.getResource("/fxml/questionView.fxml"));
+        loader.setLocation(SceneController.class.getResource("/fxml/menu.fxml"));
         Parent root = loader.load();
 
         stage.setScene(new Scene(root));
-
     }
 
 }
