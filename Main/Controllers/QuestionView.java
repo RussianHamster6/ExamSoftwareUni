@@ -2,9 +2,15 @@ package Controllers;
 
 import QuestionPack.Question;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -30,7 +36,13 @@ public class QuestionView{
     public javafx.scene.control.TableColumn<Question, ArrayList<String>> TagCol;
 
     public void initialize(){
-        System.out.println("initialize called");
+
+        QTable.setOnMouseClicked((MouseEvent event) -> {
+            if (event.getClickCount() > 1) {
+                System.out.println(QTable.getSelectionModel().getSelectedItem().getAnswer());
+            }
+        });
+
         try{
             QIDCol.setCellValueFactory(new PropertyValueFactory<>("QID"));
             DescCol.setCellValueFactory(new PropertyValueFactory<>("description"));
@@ -49,6 +61,7 @@ public class QuestionView{
             Statement statement = c.createStatement();
             ResultSet rs = statement.executeQuery("Select * from question;");
 
+
             while (rs.next()){
                 Question QToAdd = new Question(rs.getInt("questionID"),
                         rs.getString("description"),
@@ -61,10 +74,21 @@ public class QuestionView{
                 }
                 QTable.getItems().add(QToAdd);
             }
+            c.close();
             System.out.println("end");
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             System.exit(0);
         }
+    }
+
+    public void addQuestion() throws IOException {
+        Stage stage = (Stage) QTable.getScene().getWindow();
+
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(SceneController.class.getResource("/fxml/questionCreate.fxml"));
+        Parent root = loader.load();
+
+        stage.setScene(new Scene(root));
     }
 }
