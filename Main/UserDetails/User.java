@@ -12,5 +12,14 @@ public abstract class User {
     public Void deleteUser(){
         throw new UnsupportedOperationException();
     }
+
+    public boolean isEmployee(int in){
+        if (in == 0){
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
 }
 

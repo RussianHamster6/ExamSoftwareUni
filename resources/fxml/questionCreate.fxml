@@ -16,10 +16,11 @@
       <ComboBox fx:id="qTypeBox" layoutX="51.0" layoutY="172.0" prefHeight="25.0" prefWidth="377.0" promptText="Select..." />
       <Text layoutX="51.0" layoutY="168.0" strokeType="OUTSIDE" strokeWidth="0.0" text="QuestionType" />
       <Text layoutX="51.0" layoutY="221.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tags" />
-      <Button layoutX="403.0" layoutY="225.0" mnemonicParsing="false" onAction="#addTag" prefHeight="70.0" prefWidth="39.0" text="+" />
+      <Button layoutX="403.0" layoutY="225.0" mnemonicParsing="false" onAction="#addTag" prefHeight="40.0" prefWidth="50.0" text="+" />
       <TextArea fx:id="tagText" editable="false" layoutX="51.0" layoutY="225.0" prefHeight="70.0" prefWidth="348.0" />
       <Button layoutX="140.0" layoutY="361.0" mnemonicParsing="false" onAction="#submitQuestion" prefHeight="25.0" prefWidth="200.0" text="Submit Question" />
       <Text layoutX="51.0" layoutY="314.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Point Value" />
       <TextField fx:id="pointText" layoutX="51.0" layoutY="318.0" prefHeight="25.0" prefWidth="377.0" />
+      <Button layoutX="403.0" layoutY="271.0" mnemonicParsing="false" onAction="#clearTags" text="Empty" />
    </children>
 </AnchorPane>

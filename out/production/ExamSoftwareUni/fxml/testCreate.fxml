@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="400.0" prefWidth="479.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.TestCreate">
+   <children>
+      <TextField fx:id="descriptionText" layoutX="51.0" layoutY="65.0" prefHeight="25.0" prefWidth="377.0" />
+      <Text layoutX="51.0" layoutY="61.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Test Name" />
+      <Text layoutX="128.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manually Mark Test" />
+      <Text layoutX="50.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Question IDs" />
+      <Button layoutX="408.0" layoutY="143.0" mnemonicParsing="false" onAction="#addQuestion" prefHeight="42.0" prefWidth="57.0" text="+" />
+      <TextArea fx:id="QIDsText" editable="false" layoutX="50.0" layoutY="143.0" prefHeight="70.0" prefWidth="348.0" />
+      <Button layoutX="140.0" layoutY="339.0" mnemonicParsing="false" onAction="#submitTest" prefHeight="25.0" prefWidth="200.0" text="Submit Question" />
+      <CheckBox fx:id="isManMarkedBox" layoutX="247.0" layoutY="100.0" mnemonicParsing="false" />
+      <Text layoutX="50.0" layoutY="235.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Student IDs" />
+      <Button layoutX="408.0" layoutY="239.0" mnemonicParsing="false" onAction="#addStudent" prefHeight="42.0" prefWidth="57.0" text="+" />
+      <TextArea fx:id="StuIDsText" editable="false" layoutX="50.0" layoutY="239.0" prefHeight="70.0" prefWidth="348.0" />
+      <Button layoutX="408.0" layoutY="188.0" mnemonicParsing="false" onAction="#emptyQID" prefHeight="25.0" prefWidth="57.0" text="Empty" />
+      <Button layoutX="408.0" layoutY="284.0" mnemonicParsing="false" onAction="#emptyStuID" prefHeight="25.0" prefWidth="57.0" text="Empty" />
+   </children>
+</AnchorPane>

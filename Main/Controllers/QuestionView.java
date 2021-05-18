@@ -81,7 +81,9 @@ public class QuestionView{
                 QTable.getItems().add(QToAdd);
             }
             c.close();
-            QList = QTable.getItems();
+            if (this.QTable != null) {
+                QList = QTable.getItems();
+            }
             System.out.println("end");
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
@@ -90,7 +92,7 @@ public class QuestionView{
     }
 
     public void addQuestion() throws IOException {
-        Stage stage = (Stage) QTable.getScene().getWindow();
+        Stage stage = (Stage) searchText.getScene().getWindow();
 
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(SceneController.class.getResource("/fxml/questionCreate.fxml"));

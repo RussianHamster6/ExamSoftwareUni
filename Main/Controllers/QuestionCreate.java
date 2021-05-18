@@ -93,4 +93,8 @@ public class QuestionCreate {
         stage.setScene(new Scene(root));
 
     }
+
+    public void clearTags(){
+        tagText.setText("");
+    }
 }

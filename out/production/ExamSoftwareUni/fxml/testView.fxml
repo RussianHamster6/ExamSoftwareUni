@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="624.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.TestView">
+   <children>
+      <TableView fx:id="TTable" layoutX="20.0" layoutY="64.0" onMouseClicked="#editQuestion" prefHeight="272.0" prefWidth="470.0">
+        <columns>
+          <TableColumn fx:id="TestIDCol" prefWidth="75.0" text="Test ID" />
+          <TableColumn fx:id="questionListCol" prefWidth="75.0" text="Question IDs" />
+            <TableColumn fx:id="isManuallyMarkedCol" prefWidth="75.0" text="Manually Marked Test" />
+            <TableColumn fx:id="testNameCol" prefWidth="75.0" text="Test Name" />
+            <TableColumn fx:id="studentListCol" prefWidth="75.0" text="Student IDs" />
+        </columns>
+      </TableView>
+      <Button layoutX="513.0" layoutY="64.0" mnemonicParsing="false" onAction="#addQuestion" prefHeight="56.0" prefWidth="97.0" text="Add" />
+      <TextField layoutX="20.0" layoutY="24.0" prefHeight="25.0" prefWidth="470.0" fx:id="searchText" />
+      <Button layoutX="513.0" layoutY="24.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="97.0" text="Search" />
+   </children>
+</AnchorPane>

@@ -20,4 +20,17 @@ public class Menu {
         stage.setY(0);
         stage.show();
     }
+
+    public void testManagement() throws IOException {
+        Stage stage = new Stage();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(SceneController.class.getResource("/fxml/testView.fxml"));
+        Parent root = loader.load();
+
+        stage.setTitle("Test Management");
+        stage.setScene(new Scene(root));
+        stage.setX(0);
+        stage.setY(0);
+        stage.show();
+    }
 }

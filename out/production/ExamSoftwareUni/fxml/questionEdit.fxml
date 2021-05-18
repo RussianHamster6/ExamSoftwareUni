@@ -16,12 +16,13 @@
       <ComboBox fx:id="qTypeBox" layoutX="51.0" layoutY="172.0" prefHeight="25.0" prefWidth="377.0" promptText="Select..." />
       <Text layoutX="51.0" layoutY="168.0" strokeType="OUTSIDE" strokeWidth="0.0" text="QuestionType" />
       <Text layoutX="51.0" layoutY="221.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tags" />
-      <Button layoutX="403.0" layoutY="225.0" mnemonicParsing="false" onAction="#addTag" prefHeight="70.0" prefWidth="39.0" text="+" />
+      <Button layoutX="403.0" layoutY="225.0" mnemonicParsing="false" onAction="#addTag" prefHeight="38.0" prefWidth="51.0" text="+" />
       <TextArea fx:id="tagText" editable="false" layoutX="51.0" layoutY="225.0" prefHeight="70.0" prefWidth="348.0" />
       <Button layoutX="51.0" layoutY="361.0" mnemonicParsing="false" onAction="#cloneQuestion" prefHeight="25.0" prefWidth="183.0" text="Duplicate Question" />
       <Text layoutX="51.0" layoutY="314.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Point Value" />
       <TextField fx:id="pointText" layoutX="51.0" layoutY="318.0" prefHeight="25.0" prefWidth="377.0" />
       <Button layoutX="240.0" layoutY="361.0" mnemonicParsing="false" onAction="#updateQuestion" prefHeight="25.0" prefWidth="203.0" text="Update Question" />
-      <Button layoutX="391.0" layoutY="23.0" mnemonicParsing="false" text="Delete" onAction="#delete" />
+      <Button layoutX="391.0" layoutY="23.0" mnemonicParsing="false" onAction="#delete" text="Delete" />
+      <Button layoutX="402.0" layoutY="271.0" mnemonicParsing="false" onAction="#clearTags" text="Empty" />
    </children>
 </AnchorPane>

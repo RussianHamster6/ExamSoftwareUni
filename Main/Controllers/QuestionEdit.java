@@ -186,4 +186,8 @@ public class QuestionEdit {
 
         stage.setScene(new Scene(root));
     }
+
+    public void clearTags(){
+        tagText.setText("");
+    }
 }

@@ -7,11 +7,11 @@ import java.util.ArrayList;
 public class Test {
     public int testID;
     public ArrayList<Integer> questionList;
-    public boolean isManuallyMarked;
+    public Boolean isManuallyMarked;
     public String testName;
     public ArrayList<Integer> stuList;
 
-    public Test(int TID, boolean MANMARK, String TNAME){
+    public Test(int TID, Boolean MANMARK, String TNAME){
         testID = TID;
         questionList = new ArrayList<Integer>();
         isManuallyMarked = MANMARK;
@@ -37,5 +37,17 @@ public class Test {
 
     public void removeStudent(Integer studentID){
         questionList.remove(studentID);
+    }
+
+    public int getTestID(){return testID;}
+    public ArrayList<Integer> getQuestionList(){return questionList;}
+    public Boolean getIsManuallyMarked(){return isManuallyMarked;}
+    public String getTestName(){return testName;}
+    public ArrayList<Integer> getStuList(){return stuList;}
+
+
+    public String getIsManuallyMarkedAsString(){
+        if (isManuallyMarked) return "1";
+        else return "0";
     }
 }
