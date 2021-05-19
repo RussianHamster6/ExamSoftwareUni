@@ -4,12 +4,13 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="252.0" prefWidth="232.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.Menu">
+<AnchorPane prefHeight="252.0" prefWidth="232.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:id="anchor">
    <children>
-      <Button layoutX="47.0" layoutY="54.0" mnemonicParsing="false" text="Question Management" onAction="#questionManagement"/>
-      <Button layoutX="60.0" layoutY="95.0" mnemonicParsing="false" text="Test Management" onAction="#testManagement"/>
-      <Button layoutX="59.0" layoutY="134.0" mnemonicParsing="false" text="User Management" />
-      <Button layoutX="83.0" layoutY="173.0" mnemonicParsing="false" text="Do a Test" />
-      <Text fx:id="menu" layoutX="101.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Menu"/>
+      <Button layoutX="47.0" layoutY="71.0" mnemonicParsing="false" onAction="#questionManagement" text="Question Management" />
+      <Button layoutX="60.0" layoutY="112.0" mnemonicParsing="false" onAction="#testManagement" text="Test Management" />
+      <Button layoutX="59.0" layoutY="151.0" mnemonicParsing="false" onAction="#userManagement" text="User Management" />
+      <Button layoutX="83.0" layoutY="190.0" mnemonicParsing="false" text="Do a Test" />
+      <Text fx:id="menu" layoutX="101.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Menu" />
+      <Text fx:id="nameText" layoutX="40.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome: Placeholder Name" />
    </children>
 </AnchorPane>

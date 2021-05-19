@@ -23,5 +23,6 @@
       <Button layoutX="55.0" layoutY="342.0" mnemonicParsing="false" onAction="#cloneTest" prefHeight="25.0" prefWidth="147.0" text="Duplicate Test" />
       <Button layoutX="408.0" layoutY="188.0" mnemonicParsing="false" onAction="#emptyQID" prefHeight="25.0" prefWidth="57.0" text="Empty" />
       <Button layoutX="408.0" layoutY="284.0" mnemonicParsing="false" onAction="#emptyStuID" prefHeight="25.0" prefWidth="57.0" text="Empty" />
+      <Button layoutX="403.0" layoutY="23.0" mnemonicParsing="false" onAction="#delete" text="Delete" />
    </children>
 </AnchorPane>

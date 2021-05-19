@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="624.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TableView fx:id="TTable" layoutX="20.0" layoutY="64.0" prefHeight="293.0" prefWidth="584.0" onMouseClicked="#viewTest">
+        <columns>
+            <TableColumn fx:id="testNameCol" minWidth="4.0" prefWidth="582.0" text="Test Name" />
+        </columns>
+      </TableView>
+      <TextField fx:id="searchText" layoutX="20.0" layoutY="24.0" prefHeight="25.0" prefWidth="470.0" />
+      <Button layoutX="513.0" layoutY="24.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="97.0" text="Search" />
+   </children>
+</AnchorPane>
