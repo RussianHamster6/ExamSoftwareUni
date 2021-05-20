@@ -3,8 +3,14 @@ package Controllers;
 import QuestionPack.Question;
 import TestPack.Test;
 import UserDetails.User;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -13,6 +19,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class PerformTestView {
+    @FXML
+    TabPane testTabPane;
+
     Test curTest;
     User curUser;
     ArrayList<Question> QList;
@@ -63,6 +72,7 @@ public class PerformTestView {
                         newQuestion.tagList = (ArrayList<String>) tagArrayList;
                     }
                     QList.add(newQuestion);
+                    loadQuestion(newQuestion);
                 }
                 else{
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Test Contains invalid questions");
@@ -76,5 +86,34 @@ public class PerformTestView {
                 System.exit(0);
             }
         });
+    }
+
+    public void loadQuestion(Question qToLoad) throws IOException {
+        switch (qToLoad.getQType()){
+            case aritmetic:
+                Tab newTab = new Tab();
+
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(SceneController.class.getResource("/fxml/arithmeticQuestionTab.fxml"));
+                newTab.setContent(loader.load());
+                newTab.setText("Question " + (testTabPane.getTabs().size() + 1));
+                testTabPane.getTabs().add(newTab);
+                Label qLabel =(Label) testTabPane.lookup("#questionLabel");
+                qLabel.setId("");
+                qLabel.setText(qToLoad.getDescription());
+                break;
+            case multiChoice:
+                Tab newTabMulti = new Tab();
+
+                FXMLLoader loaderMulti = new FXMLLoader();
+                loaderMulti.setLocation(SceneController.class.getResource("/fxml/multiChoiceQuestion.fxml"));
+                newTabMulti.setContent(loaderMulti.load());
+                newTabMulti.setText("Question " + (testTabPane.getTabs().size() + 1));
+                testTabPane.getTabs().add(newTabMulti);
+                Label qLabelMulti =(Label) testTabPane.lookup("#questionLabel");
+                qLabelMulti.setId("");
+                qLabelMulti.setText(qToLoad.getDescription());
+                break;
+        }
     }
 }

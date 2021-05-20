@@ -5,8 +5,7 @@ import java.util.Locale;
 
 public class Question {
     public enum questionType{
-        wordAnswer,
-        orderQuest,
+        aritmetic,
         multiChoice
     }
 

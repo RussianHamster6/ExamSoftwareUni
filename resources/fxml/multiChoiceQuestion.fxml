@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.ToggleGroup?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+       <fx:define>
+           <ToggleGroup fx:id="group" />
+       </fx:define>
+      <Label fx:id="questionLabel" layoutX="62.0" layoutY="58.0" text="Placeholder text for Question" />
+      <RadioButton layoutX="412.0" layoutY="175.0" mnemonicParsing="false" text="A" toggleGroup="$group"/>
+      <RadioButton layoutX="412.0" layoutY="200.0" mnemonicParsing="false" text="B" toggleGroup="$group"/>
+      <RadioButton layoutX="412.0" layoutY="226.0" mnemonicParsing="false" text="C" toggleGroup="$group"/>
+      <RadioButton layoutX="412.0" layoutY="251.0" mnemonicParsing="false" text="D" toggleGroup="$group"/>
+   </children>
+</AnchorPane>
