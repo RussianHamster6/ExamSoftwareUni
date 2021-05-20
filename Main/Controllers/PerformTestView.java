@@ -5,10 +5,10 @@ import TestPack.Test;
 import UserDetails.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PerformTestView {
     @FXML
@@ -115,5 +116,81 @@ public class PerformTestView {
                 qLabelMulti.setText(qToLoad.getDescription());
                 break;
         }
+    }
+
+    public void endTest() throws IOException {
+        var tabList = testTabPane.getTabs();
+        AtomicInteger i = new AtomicInteger();
+        i.set(0);
+        AtomicInteger score = new AtomicInteger();
+        score.set(0);
+
+        tabList.forEach(T -> {
+            Question currentQ = QList.get(i.get());
+
+            switch (currentQ.getQType()){
+                case aritmetic:
+                    var ansField = T.getContent().lookup("#answerField");
+                    TextField ansFieldText = (TextField) ansField;
+                    String givenAns = ansFieldText.getText().toLowerCase().trim();
+                    String actualAns = QList.get(i.get()).getAnswer().toLowerCase().trim();
+                    if(givenAns.equals(actualAns)){
+                        score.set(score.get() + QList.get(i.get()).getPoints());
+                    }
+                    i.getAndIncrement();
+                    break;
+                case multiChoice:
+                    var radioButtons = T.getContent().lookupAll(".radio-button").toArray();
+                    Boolean flag = false;
+                    for (int ind = 0; ind < radioButtons.length && flag == false; ind++) {
+                        RadioButton rb = (RadioButton) radioButtons[ind];
+                        if(rb.isSelected()){
+                            flag = true;
+                            if(rb.getText().equals(QList.get(i.get()).getAnswer())) {
+                                score.set(score.get() + QList.get(i.get()).getPoints());
+                            }
+                        }
+                    }
+                    i.getAndIncrement();
+                    break;
+            }
+        });
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Your score was: " + score);
+        alert.showAndWait();
+
+        Connection c = null;
+        PreparedStatement statement;
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
+            c.setAutoCommit(false);
+            System.out.println("DBConnected");
+            statement = c.prepareStatement("Insert Into testResult (testId,stuNumber,finalScore) VALUES(?, ?, ?);");
+            statement.setInt(1, curTest.getTestID());
+            statement.setInt(2, curUser.getUID());
+            statement.setInt(3, score.get());
+            statement.execute();
+
+            c.commit();
+            c.close();
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+
+        FXMLLoader loader = new FXMLLoader();
+
+        loader.setLocation(SceneController.class.getResource("/fxml/availableTestsView.fxml"));
+        AvailableTestsView ATV = new AvailableTestsView();
+        ATV.setCurUser(curUser);
+        loader.setController(ATV);
+
+        Parent root = loader.load();
+
+        Stage stage =(Stage) testTabPane.getScene().getWindow();
+
+        stage.setScene(new Scene(root));
     }
 }

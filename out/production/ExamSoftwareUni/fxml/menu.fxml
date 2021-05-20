@@ -4,12 +4,12 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="252.0" prefWidth="232.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:id="anchor">
+<AnchorPane fx:id="anchor" prefHeight="252.0" prefWidth="232.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Button layoutX="47.0" layoutY="71.0" mnemonicParsing="false" onAction="#questionManagement" text="Question Management" />
       <Button layoutX="60.0" layoutY="112.0" mnemonicParsing="false" onAction="#testManagement" text="Test Management" />
       <Button layoutX="59.0" layoutY="151.0" mnemonicParsing="false" onAction="#userManagement" text="User Management" />
-      <Button layoutX="83.0" layoutY="190.0" mnemonicParsing="false" text="Do a Test" />
+      <Button layoutX="62.0" layoutY="187.0" mnemonicParsing="false" onAction="#testResultView" text="View Test Results" />
       <Text fx:id="menu" layoutX="101.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Menu" />
       <Text fx:id="nameText" layoutX="40.0" layoutY="53.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome: Placeholder Name" />
    </children>

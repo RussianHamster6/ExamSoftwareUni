@@ -56,7 +56,20 @@ public class Menu {
         loader.setLocation(SceneController.class.getResource("/fxml/userView.fxml"));
         Parent root = loader.load();
 
-        stage.setTitle("Test Management");
+        stage.setTitle("User Management");
+        stage.setScene(new Scene(root));
+        stage.setX(0);
+        stage.setY(0);
+        stage.show();
+    }
+
+    public void testResultView() throws IOException {
+        Stage stage = new Stage();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(SceneController.class.getResource("/fxml/testResultView.fxml"));
+        Parent root = loader.load();
+
+        stage.setTitle("View Test Results");
         stage.setScene(new Scene(root));
         stage.setX(0);
         stage.setY(0);

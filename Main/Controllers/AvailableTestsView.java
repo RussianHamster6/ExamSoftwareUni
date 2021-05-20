@@ -92,9 +92,9 @@ public class AvailableTestsView {
     public boolean doesStuListContainUID(String stuString,String testStuString){
         boolean flag = false;
         String[] strArr = null;
-        strArr = (stuString.split(","));
+        strArr = (testStuString.split(","));
         for (int i = 0; i < strArr.length; i++) {
-            if (strArr[i] == stuString && !testStuString.isEmpty()){
+            if (strArr[i].equals(stuString) && !testStuString.isEmpty()){
                 flag = true;
             }
         }
@@ -115,6 +115,7 @@ public class AvailableTestsView {
             Parent root = loader.load();
 
             stage.setScene(new Scene(root));
+
         }
     }
 }
