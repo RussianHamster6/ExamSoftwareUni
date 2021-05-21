@@ -1,7 +1,6 @@
 package QuestionPack;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class Question {
     public enum questionType{
@@ -42,11 +41,6 @@ public class Question {
     }
     public int getPoints(){
         return points;
-    }
-
-    public Boolean Checkanswer(String provAns){
-        if(provAns.toLowerCase(Locale.ROOT) == this.answer.toLowerCase(Locale.ROOT)) return true;
-        else return false;
     }
 }
 

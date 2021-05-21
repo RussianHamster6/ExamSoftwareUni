@@ -1,7 +1,5 @@
 package TestPack;
 
-import QuestionPack.Question;
-
 import java.util.ArrayList;
 
 public class Test {
@@ -17,26 +15,6 @@ public class Test {
         isManuallyMarked = MANMARK;
         testName = TNAME;
         stuList = new ArrayList<Integer>();
-    }
-
-    public void AddQuestion(Integer questionID){
-        questionList.add(questionID);
-    }
-
-    public void removeQuestion(Integer questionID){
-        questionList.remove(questionID);
-    }
-
-    public ArrayList<Question> searchQuestionTags(String searchString){
-        throw new UnsupportedOperationException();
-    }
-
-    public void AddStudent(Integer studentID){
-        stuList.add(studentID);
-    }
-
-    public void removeStudent(Integer studentID){
-        questionList.remove(studentID);
     }
 
     public int getTestID(){return testID;}

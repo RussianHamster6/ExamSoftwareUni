@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact name="unnamed">
+    <output-path>$PROJECT_DIR$/out/artifacts/unnamed</output-path>
+    <root id="root">
+      <element id="module-output" name="ExamSoftwareUni" />
+      <element id="library" level="project" name="lib" />
+      <element id="library" level="project" name="sqlite-jdbc-3.32.3.6" />
+    </root>
+  </artifact>
+</component>

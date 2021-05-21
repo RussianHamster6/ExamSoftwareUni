@@ -29,24 +29,5 @@ public class User {
     public String getName(){
         return firstName + " " + surname;
     }
-
-    public Void deleteUser(){
-        throw new UnsupportedOperationException();
-    }
-
-    public boolean isEmployeeByInt(int in){
-        if (in == 0){
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-
-    public int isEmployeeAsInt() {
-        if (isEmployee) {
-            return 1;
-        } else return 0;
-    }
 }
 
