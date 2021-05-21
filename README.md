@@ -3,6 +3,8 @@ A solution designed for my CW1 and potentially CW2 for my Object Orientated Prog
 
 To ensure that this solution builds there is a couple steps to take. 
 
+Just in case there's any confusion around how to access the edit functionality on the tables double clicking a table entry will open the detailed view of it. I think it's fairly self explanatory but I think there's a little ambiguity. 
+
 1. to Ensure that it builds properly make sure your Run/Debug configurations have been configured with the following VMSetting Equivalents:
 --module-path
 C:\Users\declan.rhodes\Desktop\javafx-sdk-11.0.2\lib 
