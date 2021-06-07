@@ -15,7 +15,7 @@
       <Text layoutX="50.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Question IDs" />
       <Button layoutX="408.0" layoutY="143.0" mnemonicParsing="false" onAction="#addQuestion" prefHeight="42.0" prefWidth="57.0" text="+" />
       <TextArea fx:id="QIDsText" editable="false" layoutX="50.0" layoutY="143.0" prefHeight="70.0" prefWidth="348.0" />
-      <Button layoutX="140.0" layoutY="339.0" mnemonicParsing="false" onAction="#submitTest" prefHeight="25.0" prefWidth="200.0" text="Submit Question" />
+      <Button layoutX="140.0" layoutY="339.0" mnemonicParsing="false" onAction="#submitTest" prefHeight="25.0" prefWidth="200.0" text="Submit Test" />
       <CheckBox fx:id="isManMarkedBox" layoutX="247.0" layoutY="100.0" mnemonicParsing="false" />
       <Text layoutX="50.0" layoutY="235.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Student IDs" />
       <Button layoutX="408.0" layoutY="239.0" mnemonicParsing="false" onAction="#addStudent" prefHeight="42.0" prefWidth="57.0" text="+" />

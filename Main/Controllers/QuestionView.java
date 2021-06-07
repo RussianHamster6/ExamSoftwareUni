@@ -1,6 +1,8 @@
 package Controllers;
 
 import QuestionPack.Question;
+import SqLiteDataHandlers.DataGetters;
+import SqLiteDataHandlers.IDataGetters;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
@@ -12,12 +14,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import navigator.INavigator;
+import navigator.Navigator;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
@@ -43,62 +44,57 @@ public class QuestionView{
     public TextField searchText;
     public ObservableList<Question> QList;
 
+    private IDataGetters dataGetter;
+    private INavigator navigator;
+
     public void initialize(){
+
+        dataGetter = new DataGetters();
+        navigator = new Navigator();
 
         searchText.textProperty().addListener((observable,oldvalue,newvalue) -> {
             searchTag(newvalue);
         });
 
-        try{
+        //Set cell values on the question table.
             QIDCol.setCellValueFactory(new PropertyValueFactory<>("QID"));
             DescCol.setCellValueFactory(new PropertyValueFactory<>("description"));
             QTypeCol.setCellValueFactory(new PropertyValueFactory<>("QType"));
             AnsCol.setCellValueFactory(new PropertyValueFactory<>("answer"));
             PointsCol.setCellValueFactory(new PropertyValueFactory<>("points"));
             TagCol.setCellValueFactory(new PropertyValueFactory<>("tagList"));
+        ResultSet rs = dataGetter.getAll("Question");
 
-            Connection c = null;
-
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
-            c.setAutoCommit(false);
-            System.out.println("Opened database successfully");
-
-            Statement statement = c.createStatement();
-            ResultSet rs = statement.executeQuery("Select * from question;");
-
-
-            while (rs.next()){
-                Question QToAdd = new Question(rs.getInt("questionID"),
-                        rs.getString("description"),
-                        rs.getString("questionType"),
-                        rs.getString("answer"),
-                        rs.getInt("points"));
-                if (rs.getString("tags") != null){
-                    ArrayList<String> tagArrayList = new ArrayList<String>(Arrays.asList(rs.getString("tags").split(",")));
-                    QToAdd.tagList = (ArrayList<String>) tagArrayList;
+        if (rs != null) {
+            try {
+                while (rs.next()) {
+                    Question QToAdd = new Question(rs.getInt("questionID"),
+                            rs.getString("description"),
+                            rs.getString("questionType"),
+                            rs.getString("answer"),
+                            rs.getInt("points"));
+                    if (rs.getString("tags") != null) {
+                        ArrayList<String> tagArrayList = new ArrayList<String>(Arrays.asList(rs.getString("tags").split(",")));
+                        QToAdd.tagList = (ArrayList<String>) tagArrayList;
+                    }
+                    QTable.getItems().add(QToAdd);
                 }
-                QTable.getItems().add(QToAdd);
+                if (this.QTable != null) {
+                    QList = QTable.getItems();
+                }
+                System.out.println("end");
+
+            } catch (Exception e) {
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                System.exit(0);
             }
-            c.close();
-            if (this.QTable != null) {
-                QList = QTable.getItems();
-            }
-            System.out.println("end");
-        } catch ( Exception e ) {
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
         }
     }
 
     public void addQuestion() throws IOException {
         Stage stage = (Stage) searchText.getScene().getWindow();
 
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(SceneController.class.getResource("/fxml/questionCreate.fxml"));
-        Parent root = loader.load();
-
-        stage.setScene(new Scene(root));
+        navigator.changeScene(stage, "questionCreate");
     }
 
     public void editQuestion(MouseEvent event) throws IOException{
