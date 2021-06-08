@@ -63,7 +63,7 @@ public class QuestionView{
             AnsCol.setCellValueFactory(new PropertyValueFactory<>("answer"));
             PointsCol.setCellValueFactory(new PropertyValueFactory<>("points"));
             TagCol.setCellValueFactory(new PropertyValueFactory<>("tagList"));
-        ResultSet rs = dataGetter.getAll("Question");
+        ResultSet rs = dataGetter.getAll("question");
 
         if (rs != null) {
             try {
@@ -88,6 +88,7 @@ public class QuestionView{
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
                 System.exit(0);
             }
+
         }
     }
 

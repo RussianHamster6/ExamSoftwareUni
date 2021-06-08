@@ -16,21 +16,42 @@ public class DataGetters implements IDataGetters {
             }
         }
 
+        if (!isValidTableName(tableName)){
+            try {
+                throw new Exception("tablename is invalid");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         try {
             Class.forName("org.sqlite.JDBC");
             c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
             c.setAutoCommit(false);
             System.out.println("Opened database successfully");
 
-            PreparedStatement statement = c.prepareStatement("Select * from ?;");
-            statement.setString(1, tableName);
-            ResultSet rs = statement.executeQuery();
-            c.close();
+            Statement statement = c.createStatement();
+            ResultSet rs = statement.executeQuery("Select * from "+ tableName + ";");
+
             return rs;
         }
         catch (Exception e){
             e.printStackTrace();
         }
         return null;
+    }
+
+    private boolean isValidTableName(String inputString){
+        if (inputString.toLowerCase() == "question"
+                || inputString.toLowerCase() == "user"
+                || inputString.toLowerCase() == "test"
+                || inputString.toLowerCase() == "qbank"
+                || inputString.toLowerCase() == "testresult"
+                ){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }
