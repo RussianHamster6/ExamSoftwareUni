@@ -1,5 +1,7 @@
 package Controllers;
 
+import SqLiteDataHandlers.DataGetters;
+import SqLiteDataHandlers.IDataGetters;
 import TestPack.Test;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -14,10 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.function.Predicate;
 
@@ -38,8 +37,11 @@ public class TestView {
     @FXML
     public TextField searchText;
     public ObservableList<Test> TList;
+    private IDataGetters dataGetter;
 
     public void initialize(){
+
+        dataGetter = new DataGetters();
 
         searchText.textProperty().addListener((observable,oldvalue,newvalue) -> {
             searchTag(newvalue);
@@ -52,15 +54,7 @@ public class TestView {
             testNameCol.setCellValueFactory(new PropertyValueFactory<>("testName"));
             studentListCol.setCellValueFactory(new PropertyValueFactory<>("stuList"));
 
-            Connection c = null;
-
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
-            c.setAutoCommit(false);
-            System.out.println("Opened database successfully");
-
-            Statement statement = c.createStatement();
-            ResultSet rs = statement.executeQuery("Select * from test;");
+            ResultSet rs = dataGetter.getAll("test");
 
 
             while (rs.next()){
@@ -87,7 +81,6 @@ public class TestView {
                 }
                 TTable.getItems().add(TToAdd);
             }
-            c.close();
             TList = TTable.getItems();
 
             System.out.println("end");

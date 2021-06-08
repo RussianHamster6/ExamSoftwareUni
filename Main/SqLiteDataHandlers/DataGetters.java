@@ -41,6 +41,27 @@ public class DataGetters implements IDataGetters {
         return null;
     }
 
+    public ResultSet getAllByCol(String tableName, String colName, String searchParam) {
+        Connection c = null;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
+            c.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+
+            String statementStr = "select * from " + tableName + " Where " + colName + " = ?";
+
+            PreparedStatement preparedStatement = c.prepareStatement(statementStr);
+            preparedStatement.setString(1, searchParam);
+            preparedStatement.execute();
+            return preparedStatement.getResultSet();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private boolean isValidTableName(String inputString){
         if (inputString.toLowerCase() == "question"
                 || inputString.toLowerCase() == "user"

@@ -1,5 +1,7 @@
 package Controllers;
 
+import SqLiteDataHandlers.DataGetters;
+import SqLiteDataHandlers.IDataGetters;
 import TestPack.TestResult;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -31,11 +33,15 @@ public class TestResultView {
 
     private ObservableList<TestResult> TRList;
 
+    private IDataGetters dataGetter;
+
     public void initialize(){
 
         searchText.textProperty().addListener((observable,oldvalue,newvalue) -> {
             searchTag(newvalue);
         });
+
+        dataGetter = new DataGetters();
 
         try {
             ResultIDCol.setCellValueFactory(new PropertyValueFactory<>("resultId"));
@@ -45,35 +51,19 @@ public class TestResultView {
             StuNameCol.setCellValueFactory(new PropertyValueFactory<>("StuName"));
             TestNameCol.setCellValueFactory(new PropertyValueFactory<>("TestName"));
 
-            Connection c = null;
-
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
-            c.setAutoCommit(false);
-            System.out.println("Opened database successfully");
-
-            Statement statement = c.createStatement();
-            ResultSet rs = statement.executeQuery("Select * from TestResult;");
+            ResultSet rs = dataGetter.getAll("TestResult;");
 
             while (rs.next()){
                 TestResult TRToAdd = new TestResult(rs.getInt("resultId"),
                         rs.getInt("testID"),
                         rs.getInt("stuNumber"),
                         rs.getInt("finalScore"));
-
-                PreparedStatement preparedStatement = c.prepareStatement("select * from user where userID = ?");
-                preparedStatement.setInt(1, TRToAdd.getStuNum());
-                preparedStatement.execute();
-                ResultSet stuRS = preparedStatement.getResultSet();
+                ResultSet stuRS = dataGetter.getAllByCol("user","userID", String.valueOf(TRToAdd.getStuNum()));
 
                 if(stuRS.next()){
                     TRToAdd.setStuName(stuRS.getString("firstName") + " " +stuRS.getString("surname"));
                 }
-
-                PreparedStatement preparedStatement1 = c.prepareStatement("select * from test where testID = ?");
-                preparedStatement1.setInt(1, TRToAdd.getTestId());
-                preparedStatement1.execute();
-                ResultSet testRS = preparedStatement1.getResultSet();
+                ResultSet testRS = dataGetter.getAllByCol("test","testID", String.valueOf(TRToAdd.getTestId()));
 
                 if(testRS.next()){
                     TRToAdd.setTestName(testRS.getString("testName"));

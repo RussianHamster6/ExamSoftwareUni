@@ -1,5 +1,7 @@
 package Controllers;
 
+import SqLiteDataHandlers.DataGetters;
+import SqLiteDataHandlers.IDataGetters;
 import TestPack.Test;
 import UserDetails.User;
 import javafx.collections.ObservableList;
@@ -13,10 +15,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 public class AvailableTestsView {
@@ -36,19 +35,15 @@ public class AvailableTestsView {
         return curUser;
     }
 
+    private IDataGetters dataGetter;
+
     public void initialize(){
+        dataGetter = new DataGetters();
+
         try{
             testNameCol.setCellValueFactory(new PropertyValueFactory<>("testName"));
 
-            Connection c = null;
-
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
-            c.setAutoCommit(false);
-            System.out.println("Opened database successfully");
-
-            Statement statement = c.createStatement();
-            ResultSet rs = statement.executeQuery("Select * from test;");
+            ResultSet rs = dataGetter.getAll("Select * from test;");
 
             String curUserIDString = String.valueOf(this.getCurUser().getUID());
 
@@ -78,7 +73,6 @@ public class AvailableTestsView {
                     TTable.getItems().add(TToAdd);
                 }
             }
-            c.close();
             TList = TTable.getItems();
 
             System.out.println("end");

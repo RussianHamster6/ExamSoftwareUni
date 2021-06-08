@@ -1,5 +1,7 @@
 package Controllers;
 
+import SqLiteDataHandlers.DataGetters;
+import SqLiteDataHandlers.IDataGetters;
 import UserDetails.User;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,10 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.Statement;
 
 public class UserView {
 
@@ -30,9 +29,10 @@ public class UserView {
     @FXML
     public javafx.scene.control.TableColumn<User,String> IsEmpCol;
     public ObservableList<User> UList;
+    private IDataGetters dataGetter;
 
     public void initialize(){
-
+        dataGetter = new DataGetters();
 
         try{
             UIDCol.setCellValueFactory(new PropertyValueFactory<>("UID"));
@@ -40,16 +40,7 @@ public class UserView {
             SNameCol.setCellValueFactory(new PropertyValueFactory<>("surname"));
             IsEmpCol.setCellValueFactory(new PropertyValueFactory<>("isEmployee"));
 
-            Connection c = null;
-
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
-            c.setAutoCommit(false);
-            System.out.println("Opened database successfully");
-
-            Statement statement = c.createStatement();
-            ResultSet rs = statement.executeQuery("Select * from user;");
-
+            ResultSet rs = dataGetter.getAll("user");
 
             while (rs.next()){
                 User UToAdd = new User(rs.getInt("userID"),
@@ -58,7 +49,6 @@ public class UserView {
                         dataConversions.testConversions.intToBool(rs.getInt("isEmployee")));
                 UTable.getItems().add(UToAdd);
             }
-            c.close();
             if (this.UTable != null) {
                 UList = UTable.getItems();
             }
