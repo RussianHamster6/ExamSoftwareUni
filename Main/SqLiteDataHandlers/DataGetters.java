@@ -27,7 +27,7 @@ public class DataGetters implements IDataGetters {
         try {
             Class.forName("org.sqlite.JDBC");
             c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
-            c.setAutoCommit(false);
+            c.setAutoCommit(true);
             System.out.println("Opened database successfully");
 
             Statement statement = c.createStatement();
@@ -46,7 +46,7 @@ public class DataGetters implements IDataGetters {
         try {
             Class.forName("org.sqlite.JDBC");
             c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
-            c.setAutoCommit(false);
+            c.setAutoCommit(true);
             System.out.println("Opened database successfully");
 
             String statementStr = "select * from " + tableName + " Where " + colName + " = ?";

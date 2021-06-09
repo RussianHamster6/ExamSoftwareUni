@@ -87,7 +87,7 @@ public class QuestionCreate {
         Stage stage = (Stage) answerText.getScene().getWindow();
 
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(SceneController.class.getResource("/fxml/questionView.fxml"));
+        loader.setLocation(QuestionCreate.class.getResource("/fxml/questionView.fxml"));
         Parent root = loader.load();
 
         stage.setScene(new Scene(root));

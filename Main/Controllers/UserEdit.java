@@ -2,12 +2,11 @@ package Controllers;
 
 import UserDetails.User;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import navigator.INavigator;
+import navigator.Navigator;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -24,6 +23,7 @@ public class UserEdit {
     CheckBox isEmpBox;
 
     private User curUser;
+    private INavigator navigator;
 
     public void setLocalUser(User user){
         this.curUser = user;
@@ -35,6 +35,7 @@ public class UserEdit {
 
     public void initialize(){
         setData();
+        navigator = new Navigator();
     }
 
     public void cloneUser() throws IOException {
@@ -59,12 +60,7 @@ public class UserEdit {
         System.out.println("Should have pushed data");
 
         Stage stage = (Stage) FNameText.getScene().getWindow();
-
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(SceneController.class.getResource("/fxml/userView.fxml"));
-        Parent root = loader.load();
-
-        stage.setScene(new Scene(root));
+        navigator.changeScene(stage,"userView");
     }
 
     private void setData(){
@@ -96,12 +92,7 @@ public class UserEdit {
         System.out.println("Should have pushed data");
 
         Stage stage = (Stage) FNameText.getScene().getWindow();
-
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(SceneController.class.getResource("/fxml/userView.fxml"));
-        Parent root = loader.load();
-
-        stage.setScene(new Scene(root));
+        navigator.changeScene(stage,"userView");
     }
 
     public void updateUser() throws IOException {
@@ -130,12 +121,7 @@ public class UserEdit {
 
 
         Stage stage = (Stage) FNameText.getScene().getWindow();
-
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(SceneController.class.getResource("/fxml/userView.fxml"));
-        Parent root = loader.load();
-
-        stage.setScene(new Scene(root));
+        navigator.changeScene(stage,"userView");
     }
 
     public void delete() throws IOException {
@@ -157,13 +143,6 @@ public class UserEdit {
             System.exit(0);
         }
         Stage stage = (Stage) FNameText.getScene().getWindow();
-
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(SceneController.class.getResource("/fxml/userView.fxml"));
-        Parent root = loader.load();
-
-        stage.setScene(new Scene(root));
-
-
+        navigator.changeScene(stage,"userView");
     }
 }

@@ -14,6 +14,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import navigator.INavigator;
+import navigator.Navigator;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -36,6 +38,7 @@ public class QuestionEdit {
     TextField pointText;
 
     private Question curQuestion;
+    private INavigator navigator;
 
     public void setLocalQuestion(Question question){
         this.curQuestion = question;
@@ -46,6 +49,7 @@ public class QuestionEdit {
     }
 
     public void initialize(){
+        navigator = new Navigator();
         qTypeBox.setItems(FXCollections.observableArrayList(Question.questionType.values()));
 
         pointText.textProperty().addListener(new ChangeListener<String>() {
@@ -106,7 +110,7 @@ public class QuestionEdit {
         Stage stage = (Stage) answerText.getScene().getWindow();
 
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(SceneController.class.getResource("/fxml/questionView.fxml"));
+        loader.setLocation(QuestionEdit.class.getResource("/fxml/questionView.fxml"));
         Parent root = loader.load();
 
         stage.setScene(new Scene(root));
@@ -141,14 +145,9 @@ public class QuestionEdit {
         }
         System.out.println("Should have pushed data");
 
-
         Stage stage = (Stage) answerText.getScene().getWindow();
 
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(SceneController.class.getResource("/fxml/questionView.fxml"));
-        Parent root = loader.load();
-
-        stage.setScene(new Scene(root));
+        navigator.changeScene(stage,"questionView");
     }
 
     private void setData(){
@@ -180,11 +179,7 @@ public class QuestionEdit {
         }
         Stage stage = (Stage) answerText.getScene().getWindow();
 
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(SceneController.class.getResource("/fxml/questionView.fxml"));
-        Parent root = loader.load();
-
-        stage.setScene(new Scene(root));
+        navigator.changeScene(stage,"questionView");
     }
 
     public void clearTags(){

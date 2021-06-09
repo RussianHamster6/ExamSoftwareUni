@@ -1,21 +1,20 @@
 package Controllers;
 
+import SqLiteDataHandlers.DataGetters;
+import SqLiteDataHandlers.IDataGetters;
 import UserDetails.User;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import navigator.INavigator;
+import navigator.Navigator;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 
@@ -24,7 +23,13 @@ public class HomePage {
     @FXML
     private TextField UID;
 
+    private INavigator navigator;
+    private IDataGetters dataGetter;
+
     public void initialize() {
+        navigator = new Navigator();
+        dataGetter = new DataGetters();
+
         UID.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue,
@@ -42,14 +47,7 @@ public class HomePage {
         ResultSet rs = null;
 
         try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
-            c.setAutoCommit(false);
-            System.out.println("DBConnected");
-            PreparedStatement statement = c.prepareStatement("Select * FROM user WHERE userID = ?");
-            statement.setInt(1, Integer.parseInt(UID.getText()));
-            statement.execute();
-            rs = statement.getResultSet();
+            rs = dataGetter.getAllByCol("user","userID",UID.getText());
             if(rs.next()){
                 loginSuccess(new User(rs.getInt("userID"),
                         rs.getString("firstName"),
@@ -61,8 +59,6 @@ public class HomePage {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "The ID you entered could not be found");
                 alert.showAndWait();
             }
-            c.commit();
-            c.close();
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             System.exit(0);
@@ -72,23 +68,16 @@ public class HomePage {
     private void loginSuccess(User userLogin) throws IOException {
         Stage stage = (Stage) UID.getScene().getWindow();
 
-        FXMLLoader loader = new FXMLLoader();
         if(userLogin.getIsEmployee()){
-            loader.setLocation(SceneController.class.getResource("/fxml/menu.fxml"));
             Menu menu = new Menu();
             menu.setCurUser(userLogin);
-            loader.setController(menu);
+            navigator.changeSceneWithClass(stage,"menu",menu);
         }
         else{
-            loader.setLocation(SceneController.class.getResource("/fxml/availableTestsView.fxml"));
             AvailableTestsView ATV = new AvailableTestsView();
             ATV.setCurUser(userLogin);
-            loader.setController(ATV);
+            navigator.changeSceneWithClass(stage,"availableTestsView",ATV);
         }
-
-        Parent root = loader.load();
-
-        stage.setScene(new Scene(root));
     }
 
 }

@@ -5,15 +5,13 @@ import SqLiteDataHandlers.IDataGetters;
 import UserDetails.User;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import navigator.INavigator;
+import navigator.Navigator;
 
-import java.io.IOException;
 import java.sql.ResultSet;
 
 public class UserView {
@@ -30,10 +28,11 @@ public class UserView {
     public javafx.scene.control.TableColumn<User,String> IsEmpCol;
     public ObservableList<User> UList;
     private IDataGetters dataGetter;
+    private INavigator navigator;
 
     public void initialize(){
         dataGetter = new DataGetters();
-
+        navigator = new Navigator();
         try{
             UIDCol.setCellValueFactory(new PropertyValueFactory<>("UID"));
             FNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
@@ -59,55 +58,19 @@ public class UserView {
         }
     }
 
-    public void addUser() throws IOException {
+    public void addUser() {
         Stage stage = (Stage) UTable.getScene().getWindow();
-
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(SceneController.class.getResource("/fxml/UserCreate.fxml"));
-        Parent root = loader.load();
-
-        stage.setScene(new Scene(root));
+        navigator.changeScene(stage,"UserCreate");
     }
 
-    public void editUser(MouseEvent event) throws IOException{
+    public void editUser(MouseEvent event){
         if (event.getClickCount() > 1) {
-
             Stage stage = (Stage) UTable.getScene().getWindow();
-
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(SceneController.class.getResource("/fxml/userEdit.fxml"));
             UserEdit userEdit = new UserEdit();
             userEdit.setLocalUser(UTable.getSelectionModel().getSelectedItem());
-            loader.setController(userEdit);
-            Parent root = loader.load();
 
-            stage.setScene(new Scene(root));
+            navigator.changeSceneWithClass(stage,"userEdit",userEdit);
         }
 
-    }
-
-    public void searchTag(String searchString) {
-        /*
-        FilteredList<User> QFiltered = new FilteredList<User>(QList);
-        if (searchString != null) {
-            Predicate<User> tag = i -> {
-                AtomicReference<Boolean> flag = new AtomicReference<>(false);
-                var tagList = i.getTagList();
-                tagList.forEach(curString -> {
-                    if (curString.toLowerCase().contains(searchString.toLowerCase())) {
-                        flag.set(true);
-                    }
-                });
-                return flag.get();
-            };
-            QFiltered.setPredicate(tag);
-        }
-        else {
-            QTable.setItems(QList);
-        }
-
-        QTable.setItems(QFiltered);
-
-         */
     }
 }

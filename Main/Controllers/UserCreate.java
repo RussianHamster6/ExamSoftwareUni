@@ -1,12 +1,11 @@
 package Controllers;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import navigator.INavigator;
+import navigator.Navigator;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -22,7 +21,10 @@ public class UserCreate {
     @FXML
     CheckBox isEmpBox;
 
+    private INavigator navigator;
+
     public void initialize(){
+        navigator = new Navigator();
     }
 
 
@@ -48,12 +50,6 @@ public class UserCreate {
         System.out.println("Should have pushed data");
 
         Stage stage = (Stage) FNameText.getScene().getWindow();
-
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(SceneController.class.getResource("/fxml/userView.fxml"));
-        Parent root = loader.load();
-
-        stage.setScene(new Scene(root));
-
+        navigator.changeScene(stage,"userView");
     }
 }

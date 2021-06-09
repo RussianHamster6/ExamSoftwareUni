@@ -2,11 +2,10 @@ package Controllers;
 
 import TestPack.Test;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import navigator.INavigator;
+import navigator.Navigator;
 
 import java.io.IOException;
 import java.sql.*;
@@ -23,6 +22,7 @@ public class TestEdit {
     TextArea StuIDsText;
 
     private Test curTest;
+    private INavigator navigator;
 
     public void setLocalQuestion(Test test){
         this.curTest = test;
@@ -34,6 +34,7 @@ public class TestEdit {
 
     public void initialize(){
         setData();
+        navigator = new Navigator();
     }
 
     public void addQuestion() throws IOException {
@@ -158,12 +159,7 @@ public class TestEdit {
         System.out.println("Should have pushed data");
 
         Stage stage = (Stage) QIDsText.getScene().getWindow();
-
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(SceneController.class.getResource("/fxml/testView.fxml"));
-        Parent root = loader.load();
-
-        stage.setScene(new Scene(root));
+        navigator.changeScene(stage,"testView");
     }
 
     public void updateTest() throws IOException {
@@ -195,12 +191,7 @@ public class TestEdit {
 
 
         Stage stage = (Stage) QIDsText.getScene().getWindow();
-
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(SceneController.class.getResource("/fxml/testView.fxml"));
-        Parent root = loader.load();
-
-        stage.setScene(new Scene(root));
+        navigator.changeScene(stage,"testView");
     }
 
     private void setData(){
@@ -232,12 +223,7 @@ public class TestEdit {
             System.exit(0);
         }
         Stage stage = (Stage) QIDsText.getScene().getWindow();
-
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(SceneController.class.getResource("/fxml/testView.fxml"));
-        Parent root = loader.load();
-
-        stage.setScene(new Scene(root));
+        navigator.changeScene(stage,"testView");
     }
 
     public void emptyQID(){

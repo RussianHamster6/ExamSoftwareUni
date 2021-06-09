@@ -95,7 +95,7 @@ public class PerformTestView {
                 Tab newTab = new Tab();
 
                 FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(SceneController.class.getResource("/fxml/arithmeticQuestionTab.fxml"));
+                loader.setLocation(PerformTestView.class.getResource("/fxml/arithmeticQuestionTab.fxml"));
                 newTab.setContent(loader.load());
                 newTab.setText("Question " + (testTabPane.getTabs().size() + 1));
                 testTabPane.getTabs().add(newTab);
@@ -107,7 +107,7 @@ public class PerformTestView {
                 Tab newTabMulti = new Tab();
 
                 FXMLLoader loaderMulti = new FXMLLoader();
-                loaderMulti.setLocation(SceneController.class.getResource("/fxml/multiChoiceQuestion.fxml"));
+                loaderMulti.setLocation(PerformTestView.class.getResource("/fxml/multiChoiceQuestion.fxml"));
                 newTabMulti.setContent(loaderMulti.load());
                 newTabMulti.setText("Question " + (testTabPane.getTabs().size() + 1));
                 testTabPane.getTabs().add(newTabMulti);
@@ -182,7 +182,7 @@ public class PerformTestView {
 
         FXMLLoader loader = new FXMLLoader();
 
-        loader.setLocation(SceneController.class.getResource("/fxml/availableTestsView.fxml"));
+        loader.setLocation(PerformTestView.class.getResource("/fxml/availableTestsView.fxml"));
         AvailableTestsView ATV = new AvailableTestsView();
         ATV.setCurUser(curUser);
         loader.setController(ATV);

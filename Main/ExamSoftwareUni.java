@@ -1,5 +1,4 @@
 import Controllers.HomePage;
-import Controllers.SceneController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,7 +9,7 @@ public class ExamSoftwareUni extends Application {
 
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(SceneController.class.getResource("/fxml/HomePage.fxml"));
+        loader.setLocation(ExamSoftwareUni.class.getResource("/fxml/HomePage.fxml"));
         Parent root = loader.load();
         HomePage homePage = (HomePage)loader.getController();
         primaryStage.setTitle("Exams Software");

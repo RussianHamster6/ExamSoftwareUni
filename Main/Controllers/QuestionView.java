@@ -6,9 +6,6 @@ import SqLiteDataHandlers.IDataGetters;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -102,18 +99,9 @@ public class QuestionView{
         if (event.getClickCount() > 1) {
 
             Stage stage = (Stage) QTable.getScene().getWindow();
-
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(SceneController.class.getResource("/fxml/questionEdit.fxml"));
             QuestionEdit questionEdit = new QuestionEdit();
             questionEdit.setLocalQuestion(QTable.getSelectionModel().getSelectedItem());
-            loader.setController(questionEdit);
-            Parent root = loader.load();
-
-            stage.setScene(new Scene(root));
-
-
-            System.out.println(QTable.getSelectionModel().getSelectedItem().getQID());
+            navigator.changeSceneWithClass(stage,"questionEdit",questionEdit);
         }
     }
 
