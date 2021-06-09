@@ -12,6 +12,8 @@ import javafx.stage.Stage;
 import navigator.INavigator;
 import navigator.Navigator;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 
 public class UserView {
@@ -38,8 +40,12 @@ public class UserView {
             FNameCol.setCellValueFactory(new PropertyValueFactory<>("firstName"));
             SNameCol.setCellValueFactory(new PropertyValueFactory<>("surname"));
             IsEmpCol.setCellValueFactory(new PropertyValueFactory<>("isEmployee"));
-
-            ResultSet rs = dataGetter.getAll("user");
+            Connection c = null;
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
+            c.setAutoCommit(true);
+            System.out.println("Opened database successfully");
+            ResultSet rs = dataGetter.getAll("user",c);
 
             while (rs.next()){
                 User UToAdd = new User(rs.getInt("userID"),
@@ -48,6 +54,7 @@ public class UserView {
                         dataConversions.testConversions.intToBool(rs.getInt("isEmployee")));
                 UTable.getItems().add(UToAdd);
             }
+            c.close();
             if (this.UTable != null) {
                 UList = UTable.getItems();
             }

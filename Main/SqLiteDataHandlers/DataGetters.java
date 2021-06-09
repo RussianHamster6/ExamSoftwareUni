@@ -5,8 +5,7 @@ import java.sql.*;
 public class DataGetters implements IDataGetters {
 
     //gets all data as a ResultSet from a table by the table name
-    public ResultSet getAll(String tableName) {
-        Connection c = null;
+    public ResultSet getAll(String tableName,Connection c) {
 
         if (tableName.isEmpty()){
             try {
@@ -41,14 +40,8 @@ public class DataGetters implements IDataGetters {
         return null;
     }
 
-    public ResultSet getAllByCol(String tableName, String colName, String searchParam) {
-        Connection c = null;
+    public ResultSet getAllByCol(String tableName, String colName, String searchParam, Connection c) {
         try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
-            c.setAutoCommit(true);
-            System.out.println("Opened database successfully");
-
             String statementStr = "select * from " + tableName + " Where " + colName + " = ?";
 
             PreparedStatement preparedStatement = c.prepareStatement(statementStr);

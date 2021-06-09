@@ -15,7 +15,10 @@ import navigator.INavigator;
 import navigator.Navigator;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
@@ -44,7 +47,7 @@ public class QuestionView{
     private IDataGetters dataGetter;
     private INavigator navigator;
 
-    public void initialize(){
+    public void initialize() throws SQLException {
 
         dataGetter = new DataGetters();
         navigator = new Navigator();
@@ -60,7 +63,18 @@ public class QuestionView{
             AnsCol.setCellValueFactory(new PropertyValueFactory<>("answer"));
             PointsCol.setCellValueFactory(new PropertyValueFactory<>("points"));
             TagCol.setCellValueFactory(new PropertyValueFactory<>("tagList"));
-        ResultSet rs = dataGetter.getAll("question");
+            ResultSet rs = null;
+            Connection c = null;
+            try {
+                Class.forName("org.sqlite.JDBC");
+                c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
+                c.setAutoCommit(true);
+                System.out.println("Opened database successfully");
+                rs = dataGetter.getAll("question",c);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
 
         if (rs != null) {
             try {
@@ -87,6 +101,7 @@ public class QuestionView{
             }
 
         }
+        c.close();
     }
 
     public void addQuestion() throws IOException {

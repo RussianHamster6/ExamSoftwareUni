@@ -14,6 +14,8 @@ import navigator.INavigator;
 import navigator.Navigator;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
@@ -42,8 +44,12 @@ public class AvailableTestsView {
         navigator = new Navigator();
         try{
             testNameCol.setCellValueFactory(new PropertyValueFactory<>("testName"));
-
-            ResultSet rs = dataGetter.getAll("Select * from test;");
+            Connection c = null;
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
+            c.setAutoCommit(true);
+            System.out.println("Opened database successfully");
+            ResultSet rs = dataGetter.getAll("test",c);
 
             String curUserIDString = String.valueOf(this.getCurUser().getUID());
 
@@ -73,6 +79,7 @@ public class AvailableTestsView {
                     TTable.getItems().add(TToAdd);
                 }
             }
+            c.close();
             TList = TTable.getItems();
 
             System.out.println("end");

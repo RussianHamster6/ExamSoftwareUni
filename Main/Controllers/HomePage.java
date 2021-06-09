@@ -15,6 +15,7 @@ import navigator.Navigator;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 
 
@@ -47,13 +48,18 @@ public class HomePage {
         ResultSet rs = null;
 
         try {
-            rs = dataGetter.getAllByCol("user","userID",UID.getText());
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
+            c.setAutoCommit(true);
+            System.out.println("Opened database successfully");
+            rs = dataGetter.getAllByCol("user","userID",UID.getText(),c);
             if(rs.next()){
                 loginSuccess(new User(rs.getInt("userID"),
                         rs.getString("firstName"),
                         rs.getString("surname"),
                         dataConversions.testConversions.intToBool(rs.getInt("isEmployee"))
                 ));
+                c.close();
             }
             else{
                 Alert alert = new Alert(Alert.AlertType.ERROR, "The ID you entered could not be found");
@@ -63,6 +69,7 @@ public class HomePage {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             System.exit(0);
         }
+
     }
 
     private void loginSuccess(User userLogin) throws IOException {

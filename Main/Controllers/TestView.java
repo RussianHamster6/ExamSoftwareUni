@@ -15,6 +15,8 @@ import navigator.INavigator;
 import navigator.Navigator;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.function.Predicate;
@@ -55,7 +57,12 @@ public class TestView {
             testNameCol.setCellValueFactory(new PropertyValueFactory<>("testName"));
             studentListCol.setCellValueFactory(new PropertyValueFactory<>("stuList"));
 
-            ResultSet rs = dataGetter.getAll("test");
+            Connection c = null;
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
+            c.setAutoCommit(true);
+            System.out.println("Opened database successfully");
+            ResultSet rs = dataGetter.getAll("test",c);
 
 
             while (rs.next()){
@@ -82,6 +89,7 @@ public class TestView {
                 }
                 TTable.getItems().add(TToAdd);
             }
+            c.close();
             TList = TTable.getItems();
 
             System.out.println("end");

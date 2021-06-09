@@ -51,19 +51,25 @@ public class TestResultView {
             StuNameCol.setCellValueFactory(new PropertyValueFactory<>("StuName"));
             TestNameCol.setCellValueFactory(new PropertyValueFactory<>("TestName"));
 
-            ResultSet rs = dataGetter.getAll("TestResult;");
+            Connection c = null;
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
+            c.setAutoCommit(true);
+            System.out.println("Opened database successfully");
+
+            ResultSet rs = dataGetter.getAll("TestResult;",c);
 
             while (rs.next()){
                 TestResult TRToAdd = new TestResult(rs.getInt("resultId"),
                         rs.getInt("testID"),
                         rs.getInt("stuNumber"),
                         rs.getInt("finalScore"));
-                ResultSet stuRS = dataGetter.getAllByCol("user","userID", String.valueOf(TRToAdd.getStuNum()));
+                ResultSet stuRS = dataGetter.getAllByCol("user","userID", String.valueOf(TRToAdd.getStuNum()),c);
 
                 if(stuRS.next()){
                     TRToAdd.setStuName(stuRS.getString("firstName") + " " +stuRS.getString("surname"));
                 }
-                ResultSet testRS = dataGetter.getAllByCol("test","testID", String.valueOf(TRToAdd.getTestId()));
+                ResultSet testRS = dataGetter.getAllByCol("test","testID", String.valueOf(TRToAdd.getTestId()),c);
 
                 if(testRS.next()){
                     TRToAdd.setTestName(testRS.getString("testName"));
@@ -71,6 +77,7 @@ public class TestResultView {
                 TRTable.getItems().add(TRToAdd);
             }
             TRList =(ObservableList<TestResult>) TRTable.getItems();
+            c.close();
         }
         catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
