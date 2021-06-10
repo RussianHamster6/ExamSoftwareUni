@@ -69,7 +69,7 @@ public class PerformTestView {
                 c.setAutoCommit(false);
                 System.out.println("DBConnected");
 
-                ResultSet rs = dataGetters.getAllByCol("question","questionID",Q,c);
+                ResultSet rs = dataGetters.getAllByCol("question","questionID",String.valueOf(Q),c);
 
                 if (rs.next()){
                     Question newQuestion = new Question(rs.getInt("questionID"),
