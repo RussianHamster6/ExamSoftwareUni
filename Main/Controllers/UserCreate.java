@@ -1,16 +1,14 @@
 package Controllers;
 
+import SqLiteDataHandlers.DataSetters;
+import SqLiteDataHandlers.IDataSetters;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import navigator.INavigator;
 import navigator.Navigator;
-
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 
 public class UserCreate {
 
@@ -22,34 +20,29 @@ public class UserCreate {
     CheckBox isEmpBox;
 
     private INavigator navigator;
+    private IDataSetters dataSetter;
 
     public void initialize(){
         navigator = new Navigator();
+        dataSetter = new DataSetters();
     }
 
+    public void submitUser(){
+        Boolean success = dataSetter.createNewEntry(
+                "user",
+                "firstName,surname,isEmployee",
+                FNameText.getText(),
+                SNameText.getText(),
+                String.valueOf(dataConversions.testConversions.boolToInt(isEmpBox.isSelected()))
+        );
 
-    public void submitUser() throws IOException {
-        Connection c = null;
-
-        try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
-            c.setAutoCommit(false);
-            System.out.println("DBConnected");
-            PreparedStatement statement = c.prepareStatement("INSERT INTO user (firstName,surname,isEmployee) VALUES(?, ?, ?);");
-            statement.setString(1,FNameText.getText());
-            statement.setString(2,SNameText.getText());
-            statement.setInt(3,dataConversions.testConversions.boolToInt(isEmpBox.isSelected()));
-            statement.execute();
-            c.commit();
-            c.close();
-        } catch ( Exception e ) {
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
+        if(success) {
+            Stage stage = (Stage) FNameText.getScene().getWindow();
+            navigator.changeScene(stage, "userView");
         }
-        System.out.println("Should have pushed data");
-
-        Stage stage = (Stage) FNameText.getScene().getWindow();
-        navigator.changeScene(stage,"userView");
+        else{
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Something went wrong, please try again");
+            alert.showAndWait();
+        }
     }
 }

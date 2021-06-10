@@ -1,6 +1,9 @@
 package Controllers;
 
 import QuestionPack.Question;
+import SqLiteDataHandlers.DataGetters;
+import SqLiteDataHandlers.DataSetters;
+import SqLiteDataHandlers.IDataSetters;
 import TestPack.Test;
 import UserDetails.User;
 import javafx.fxml.FXML;
@@ -9,6 +12,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import navigator.INavigator;
+import navigator.Navigator;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -27,6 +32,10 @@ public class PerformTestView {
     User curUser;
     ArrayList<Question> QList;
 
+    private IDataSetters dataSetter;
+    private SqLiteDataHandlers.IDataGetters dataGetters;
+    private INavigator navigator;
+
     public User getCurUser() {
         return curUser;
     }
@@ -44,6 +53,9 @@ public class PerformTestView {
     }
 
     public void initialize(){
+        dataGetters = new DataGetters();
+        dataSetter = new DataSetters();
+        navigator = new Navigator();
         //Get list of question IDs from Test
         ArrayList<Integer> QIDList = this.getCurTest().questionList;
         QList = new ArrayList<Question>();
@@ -56,11 +68,8 @@ public class PerformTestView {
                 c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
                 c.setAutoCommit(false);
                 System.out.println("DBConnected");
-                PreparedStatement statement = c.prepareStatement("Select * from question Where questionID = ?;");
-                statement.setInt(1,Q);
-                statement.execute();
 
-                ResultSet rs = statement.getResultSet();
+                ResultSet rs = dataGetters.getAllByCol("question","questionID",Q,c);
 
                 if (rs.next()){
                     Question newQuestion = new Question(rs.getInt("questionID"),
@@ -80,7 +89,6 @@ public class PerformTestView {
                     alert.showAndWait();
                 }
 
-                c.commit();
                 c.close();
             } catch ( Exception e ) {
                 System.err.println( e.getClass().getName() + ": " + e.getMessage() );
@@ -162,35 +170,24 @@ public class PerformTestView {
         Connection c = null;
         PreparedStatement statement;
 
-        try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
-            c.setAutoCommit(false);
-            System.out.println("DBConnected");
-            statement = c.prepareStatement("Insert Into testResult (testId,stuNumber,finalScore) VALUES(?, ?, ?);");
-            statement.setInt(1, curTest.getTestID());
-            statement.setInt(2, curUser.getUID());
-            statement.setInt(3, score.get());
-            statement.execute();
+        Boolean success =
+        dataSetter.createNewEntry(
+                "testResult",
+                "testId,stuNumber,finalScore",
+                String.valueOf(curTest.getTestID())
+                ,String.valueOf(curUser.getUID())
+                ,String.valueOf(score.get())
+        );
 
-            c.commit();
-            c.close();
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
+        if (success) {
+            Stage stage = (Stage) testTabPane.getScene().getWindow();
+            AvailableTestsView ATV = new AvailableTestsView();
+            ATV.setCurUser(curUser);
+            navigator.changeSceneWithClass(stage,"availableTestsView",ATV);
         }
-
-        FXMLLoader loader = new FXMLLoader();
-
-        loader.setLocation(PerformTestView.class.getResource("/fxml/availableTestsView.fxml"));
-        AvailableTestsView ATV = new AvailableTestsView();
-        ATV.setCurUser(curUser);
-        loader.setController(ATV);
-
-        Parent root = loader.load();
-
-        Stage stage =(Stage) testTabPane.getScene().getWindow();
-
-        stage.setScene(new Scene(root));
+        else{
+            Alert alertIssue = new Alert(Alert.AlertType.ERROR, "Something went wrong, please try again");
+            alertIssue.showAndWait();
+        }
     }
 }

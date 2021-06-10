@@ -1,6 +1,8 @@
 package Controllers;
 
 import QuestionPack.Question;
+import SqLiteDataHandlers.DataSetters;
+import SqLiteDataHandlers.IDataSetters;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -8,16 +10,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 
 public class QuestionCreate {
 
@@ -32,8 +28,11 @@ public class QuestionCreate {
     @FXML
     TextField pointText;
 
+    public IDataSetters dataSetter;
+
     public void initialize(){
         qTypeBox.setItems(FXCollections.observableArrayList(Question.questionType.values()));
+        dataSetter = new DataSetters();
 
         pointText.textProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -62,35 +61,29 @@ public class QuestionCreate {
     }
 
     public void submitQuestion() throws IOException {
-        Connection c = null;
 
-        try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
-            c.setAutoCommit(false);
-            System.out.println("DBConnected");
-            PreparedStatement statement = c.prepareStatement("INSERT INTO question (description,questionType,answer,tags,points) VALUES(?, ?, ?, ?, ?);");
-            statement.setString(1,descriptionText.getText());
-            statement.setString(2,qTypeBox.getValue().toString());
-            statement.setString(3,answerText.getText());
-            statement.setString(4,tagText.getText());
-            statement.setInt(5, Integer.parseInt(pointText.getText()));
-            statement.execute();
-            c.commit();
-            c.close();
-        } catch ( Exception e ) {
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
+        Boolean success = dataSetter.createNewEntry("question",
+                "description,questionType,answer,tags,points",
+                descriptionText.getText(),
+                qTypeBox.getValue().toString(),
+                answerText.getText(),
+                tagText.getText(),
+                pointText.getText());
+
+        if(success) {
+
+            Stage stage = (Stage) answerText.getScene().getWindow();
+
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(QuestionCreate.class.getResource("/fxml/questionView.fxml"));
+            Parent root = loader.load();
+
+            stage.setScene(new Scene(root));
         }
-        System.out.println("Should have pushed data");
-
-        Stage stage = (Stage) answerText.getScene().getWindow();
-
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(QuestionCreate.class.getResource("/fxml/questionView.fxml"));
-        Parent root = loader.load();
-
-        stage.setScene(new Scene(root));
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Something went wrong, please try again");
+            alert.showAndWait();
+        }
 
     }
 

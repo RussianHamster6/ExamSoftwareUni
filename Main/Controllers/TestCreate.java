@@ -1,5 +1,8 @@
 package Controllers;
 
+import SqLiteDataHandlers.DataGetters;
+import SqLiteDataHandlers.DataSetters;
+import SqLiteDataHandlers.IDataSetters;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -7,7 +10,10 @@ import navigator.INavigator;
 import navigator.Navigator;
 
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class TestCreate {
 
@@ -21,9 +27,13 @@ public class TestCreate {
     TextArea StuIDsText;
 
     private INavigator navigator;
+    private IDataSetters dataSetter;
+    private SqLiteDataHandlers.IDataGetters dataGetter;
 
     public void initialize(){
         navigator = new Navigator();
+        dataSetter = new DataSetters();
+        dataGetter = new DataGetters();
     }
 
     public void addQuestion() throws IOException {
@@ -40,19 +50,7 @@ public class TestCreate {
                 Class.forName("org.sqlite.JDBC");
                 c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
                 c.setAutoCommit(false);
-                System.out.println("DBConnected");
-                PreparedStatement statement = c.prepareStatement("Select * from question where questionID = ?;");
-                statement.setInt(1, Integer.parseInt(td.getEditor().getText()));
-                statement.execute();
-                rs = statement.getResultSet();
-                c.commit();
-                c.close();
-            } catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                System.exit(0);
-            }
-
-            try {
+                rs = dataGetter.getAllByCol("question","questionID",td.getEditor().getText(),c);
                 if (rs.next() != false) {
                     if (QIDsText.getText().length() == 0) {
                         QIDsText.setText(td.getEditor().getText());
@@ -63,10 +61,10 @@ public class TestCreate {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "The QID you entered could not be found");
                     alert.showAndWait();
                 }
-
-            } catch (SQLException throwables) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, throwables.getMessage());
-                alert.showAndWait();
+                c.close();
+            } catch (Exception e) {
+                System.err.println(e.getClass().getName() + ": " + e.getMessage());
+                System.exit(0);
             }
         }
         else {
@@ -90,11 +88,7 @@ public class TestCreate {
                 Class.forName("org.sqlite.JDBC");
                 c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
                 c.setAutoCommit(false);
-                System.out.println("DBConnected");
-                statement = c.prepareStatement("Select * from user where userID = ?;");
-                statement.setInt(1, Integer.parseInt(td.getEditor().getText()));
-                statement.execute();
-                rs = statement.getResultSet();
+                rs = dataGetter.getAllByCol("user","userID",td.getEditor().getText(),c);
 
                 if (rs.next() != false ) {
                     if(rs.getInt("isEmployee") == 0) {
@@ -113,7 +107,6 @@ public class TestCreate {
                     alert.showAndWait();
                 }
 
-                c.commit();
                 c.close();
             } catch (Exception e) {
                 System.err.println(e.getClass().getName() + ": " + e.getMessage());
@@ -128,29 +121,19 @@ public class TestCreate {
 
     public void submitTest() throws IOException {
 
-        Connection c = null;
+        Boolean success = dataSetter.createNewEntry(
+                "test",
+                "questionList,isManuallyMarked,testName,stuList",
+                QIDsText.getText(),
+                String.valueOf(dataConversions.testConversions.boolToInt(isManMarkedBox.isSelected())),
+                descriptionText.getText(),
+                StuIDsText.getText()
+                );
 
-        try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
-            c.setAutoCommit(false);
-            System.out.println("DBConnected");
-            PreparedStatement statement = c.prepareStatement("INSERT INTO Test (questionList,isManuallyMarked,testName,stuList) VALUES(?, ?, ?, ?);");
-            statement.setString(1,QIDsText.getText());
-            statement.setInt(2,dataConversions.testConversions.boolToInt(isManMarkedBox.isSelected()));
-            statement.setString(3,descriptionText.getText());
-            statement.setString(4, StuIDsText.getText());
-            statement.execute();
-            c.commit();
-            c.close();
-        } catch ( Exception e ) {
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
+        if(success) {
+            Stage stage = (Stage) QIDsText.getScene().getWindow();
+            navigator.changeScene(stage, "testView");
         }
-        System.out.println("Should have pushed data");
-
-        Stage stage = (Stage) QIDsText.getScene().getWindow();
-        navigator.changeScene(stage,"testView");
 
     }
 
