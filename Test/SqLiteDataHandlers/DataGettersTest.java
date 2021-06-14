@@ -16,6 +16,7 @@ class DataGettersTest {
     @BeforeEach
     void setUp() {
         dataGetter = new DataGetters();
+
         try {
             Class.forName("org.sqlite.JDBC");
             c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
@@ -78,5 +79,12 @@ class DataGettersTest {
 
     @Test
     void getAllByCol() {
+        ResultSet rs = dataGetter.getAllByCol("user","userID","1",c);
+        try {
+            Assertions.assertTrue(rs.next());
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

@@ -1,6 +1,8 @@
 package Controllers;
 
 import QuestionPack.Question;
+import SqLiteDataHandlers.DataSetters;
+import SqLiteDataHandlers.IDataSetters;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -8,10 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import navigator.INavigator;
@@ -39,6 +38,7 @@ public class QuestionEdit {
 
     private Question curQuestion;
     private INavigator navigator;
+    private IDataSetters dataSetter;
 
     public void setLocalQuestion(Question question){
         this.curQuestion = question;
@@ -50,6 +50,7 @@ public class QuestionEdit {
 
     public void initialize(){
         navigator = new Navigator();
+        dataSetter = new DataSetters();
         qTypeBox.setItems(FXCollections.observableArrayList(Question.questionType.values()));
 
         pointText.textProperty().addListener(new ChangeListener<String>() {
@@ -85,35 +86,28 @@ public class QuestionEdit {
 
     public void cloneQuestion() throws IOException {
         Connection c = null;
+        Boolean success =
+        dataSetter.createNewEntry("question",
+                "description,questionType,answer,tags,points",
+                descriptionText.getText(),
+                qTypeBox.getValue().toString(),
+                answerText.getText(),
+                tagText.getText(),
+                pointText.getText());
 
-        try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
-            c.setAutoCommit(false);
-            System.out.println("DBConnected");
-            PreparedStatement statement = c.prepareStatement("INSERT INTO question (description,questionType,answer,tags,points) VALUES(?, ?, ?, ?, ?);");
-            statement.setString(1,descriptionText.getText());
-            statement.setString(2,qTypeBox.getValue().toString());
-            statement.setString(3,answerText.getText());
-            statement.setString(4,tagText.getText());
-            statement.setInt(5, Integer.parseInt(pointText.getText()));
-            statement.execute();
-            c.commit();
-            c.close();
-        } catch ( Exception e ) {
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
+        if(success) {
+            Stage stage = (Stage) answerText.getScene().getWindow();
+
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(QuestionEdit.class.getResource("/fxml/questionView.fxml"));
+            Parent root = loader.load();
+
+            stage.setScene(new Scene(root));
         }
-        System.out.println("Should have pushed data");
-
-
-        Stage stage = (Stage) answerText.getScene().getWindow();
-
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(QuestionEdit.class.getResource("/fxml/questionView.fxml"));
-        Parent root = loader.load();
-
-        stage.setScene(new Scene(root));
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Something went wrong, please try again");
+            alert.showAndWait();
+        }
 
     }
 
@@ -161,24 +155,8 @@ public class QuestionEdit {
     }
 
     public void delete() throws IOException {
-        Connection c = null;
-
-        try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
-            c.setAutoCommit(false);
-            System.out.println("DBConnected");
-            PreparedStatement statement = c.prepareStatement("DELETE FROM question WHERE questionID = ?");
-            statement.setInt(1,curQuestion.getQID());
-            statement.execute();
-            c.commit();
-            c.close();
-        } catch ( Exception e ) {
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-        }
+        dataSetter.deleteEntry("question","questionID",String.valueOf(curQuestion.getQID()));
         Stage stage = (Stage) answerText.getScene().getWindow();
-
         navigator.changeScene(stage,"questionView");
     }
 

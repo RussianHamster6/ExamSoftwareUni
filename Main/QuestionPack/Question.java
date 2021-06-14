@@ -5,7 +5,8 @@ import java.util.ArrayList;
 public class Question {
     public enum questionType{
         aritmetic,
-        multiChoice
+        multiChoice,
+        essay
     }
 
     public int QID;

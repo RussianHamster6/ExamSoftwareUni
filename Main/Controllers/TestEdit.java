@@ -1,6 +1,8 @@
 package Controllers;
 
+import TestPack.ITestHelper;
 import TestPack.Test;
+import TestPack.TestHelper;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -23,6 +25,7 @@ public class TestEdit {
 
     private Test curTest;
     private INavigator navigator;
+    private ITestHelper testHelper;
 
     public void setLocalQuestion(Test test){
         this.curTest = test;
@@ -35,6 +38,7 @@ public class TestEdit {
     public void initialize(){
         setData();
         navigator = new Navigator();
+        testHelper = new TestHelper();
     }
 
     public void addQuestion() throws IOException {
@@ -43,47 +47,7 @@ public class TestEdit {
         td.setContentText("Enter your QuestionID");
         td.showAndWait();
 
-        ResultSet rs = null;
-        Connection c = null;
-
-        if(dataConversions.testConversions.isInteger(td.getEditor().getText())) {
-            try {
-                Class.forName("org.sqlite.JDBC");
-                c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
-                c.setAutoCommit(false);
-                System.out.println("DBConnected");
-                PreparedStatement statement = c.prepareStatement("Select * from question where questionID = ?;");
-                statement.setInt(1, Integer.parseInt(td.getEditor().getText()));
-                statement.execute();
-                rs = statement.getResultSet();
-                c.commit();
-                c.close();
-            } catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
-                System.exit(0);
-            }
-
-            try {
-                if (rs.next() != false) {
-                    if (QIDsText.getText().length() == 0) {
-                        QIDsText.setText(td.getEditor().getText());
-                    } else {
-                        QIDsText.setText(QIDsText.getText() + "," + td.getEditor().getText());
-                    }
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR, "The QID you entered could not be found");
-                    alert.showAndWait();
-                }
-
-            } catch (SQLException throwables) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, throwables.getMessage());
-                alert.showAndWait();
-            }
-        }
-        else {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "The QID you entered is not an integer");
-            alert.showAndWait();
-        }
+        QIDsText.setText(testHelper.returnQListAfterAdd(td.getEditor().getText(),isManMarkedBox,QIDsText.getText()));
     }
 
     public void addStudent() throws IOException {
@@ -92,48 +56,8 @@ public class TestEdit {
         td.setContentText("Enter your QuestionID");
         td.showAndWait();
 
-        ResultSet rs = null;
-        Connection c = null;
-        PreparedStatement statement = null;
+        StuIDsText.setText(testHelper.returnStuListAfterAdd(StuIDsText.getText(),td.getEditor().getText()));
 
-        if(dataConversions.testConversions.isInteger(td.getEditor().getText())) {
-            try {
-                Class.forName("org.sqlite.JDBC");
-                c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
-                c.setAutoCommit(false);
-                System.out.println("DBConnected");
-                statement = c.prepareStatement("Select * from user where userID = ?;");
-                statement.setInt(1, Integer.parseInt(td.getEditor().getText()));
-                statement.execute();
-                rs = statement.getResultSet();
-
-                if (rs.next() != false ) {
-                    if(rs.getInt("isEmployee") == 0) {
-                        if (StuIDsText.getText().length() == 0) {
-                            StuIDsText.setText(td.getEditor().getText());
-                        } else {
-                            StuIDsText.setText(StuIDsText.getText() + "," + td.getEditor().getText());
-                        }
-                    }
-                    else{
-                        Alert alert = new Alert(Alert.AlertType.ERROR, "The QID you entered is for a Staff member");
-                        alert.showAndWait();
-                    }
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR, "The QID you entered could not be found");
-                    alert.showAndWait();
-                }
-
-                c.commit();
-                c.close();
-            } catch (Exception e) {
-                System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            }
-        }
-        else {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "The QID you entered is not an integer");
-            alert.showAndWait();
-        }
     }
 
     public void cloneTest() throws IOException {

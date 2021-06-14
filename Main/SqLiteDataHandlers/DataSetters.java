@@ -74,4 +74,25 @@ public class DataSetters implements IDataSetters{
             return false;
         }
     }
+
+    public Boolean deleteEntry(String tableName, String column, String deleteParam){
+        Connection c = null;
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
+            c.setAutoCommit(false);
+            System.out.println("DBConnected");
+            PreparedStatement statement = c.prepareStatement("DELETE FROM " + tableName +" WHERE " + column + " = ?");
+            statement.setString(1, deleteParam);
+            statement.execute();
+            c.commit();
+            c.close();
+            return true;
+        }
+        catch(Exception e){
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            return false;
+        }
+    }
 }
