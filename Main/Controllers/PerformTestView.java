@@ -16,10 +16,7 @@ import navigator.INavigator;
 import navigator.Navigator;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -132,6 +129,30 @@ public class PerformTestView {
                 newTabEssay.setContent(loaderEssay.load());
                 newTabEssay.setText("Question " + (testTabPane.getTabs().size() + 1));
                 newTabEssay.getContent().lookup("#correctAnswerCheckBox").setVisible(true);
+                if(newTabEssay.getContent().lookup("#correctAnswerCheckBox").isVisible()){
+                    try {
+                        Connection c = null;
+                        Class.forName("org.sqlite.JDBC");
+                        c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
+                        c.setAutoCommit(false);
+
+                        String statementStr = "Select * from answer Where TestID = " + String.valueOf(getCurTest().getTestID());
+                        Statement statement = c.createStatement();
+                        ResultSet answer = statement.executeQuery(statementStr);
+
+                        while(answer.next()){
+                            if(answer.getInt("StudentID") == getCurUser().getUID() && answer.getInt("QuestionID") == qToLoad.getQID()){
+                                String answerGiven = answer.getString("Answer");
+                                TextArea essayAnswerField = (TextArea) newTabEssay.getContent().lookup("#essayAnswerField");
+                                essayAnswerField.setText(answerGiven);
+                            }
+                        }
+                        c.close();
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
                 testTabPane.getTabs().add(newTabEssay);
                 Label qLabelEssay =(Label) testTabPane.lookup("#questionLabel");
                 qLabelEssay.setId("");
@@ -212,7 +233,7 @@ public class PerformTestView {
                     case aritmetic:
                         var ansField = T.getContent().lookup("#answerField");
                         TextField ansFieldText = (TextField) ansField;
-                        dataSetter.createNewEntry("Answer","TestID,StudentID,Answer" ,String.valueOf(getCurTest().testID),String.valueOf(currentQ.getQID()),ansFieldText.getText());
+                        dataSetter.createNewEntry("Answer","TestID,StudentID,Answer,QuestionID" ,String.valueOf(getCurTest().testID),String.valueOf(curUser.getUID()),ansFieldText.getText(),String.valueOf(currentQ.getQID()));
                         break;
                     case multiChoice:
                         var radioButtons = T.getContent().lookupAll(".radio-button").toArray();
@@ -222,7 +243,7 @@ public class PerformTestView {
                             if (rb.isSelected()) {
                                 flag = true;
 
-                                dataSetter.createNewEntry("Answer","TestID,StudentID,Answer" ,String.valueOf(getCurTest().testID),String.valueOf(currentQ.getQID()),rb.getText());
+                                dataSetter.createNewEntry("Answer","TestID,StudentID,Answer,QuestionID" ,String.valueOf(getCurTest().testID),String.valueOf(currentQ.getQID()),rb.getText(),String.valueOf(currentQ.getQID()));
                             }
                         }
                         i.getAndIncrement();
@@ -230,7 +251,8 @@ public class PerformTestView {
                     case essay:
                         var lookup = T.getContent().lookup("#essayAnswerField");
                         TextArea essayAnsField = (TextArea) lookup;
-                        dataSetter.createNewEntry("Answer","TestID,StudentID,Answer" ,String.valueOf(getCurTest().testID),String.valueOf(currentQ.getQID()),essayAnsField.getText());
+                        dataSetter.createNewEntry("Answer","TestID,StudentID,Answer,QuestionID" ,String.valueOf(getCurTest().testID),String.valueOf(currentQ.getQID()),essayAnsField.getText(),String.valueOf(currentQ.getQID()));
+                        break;
                 }
             });
 

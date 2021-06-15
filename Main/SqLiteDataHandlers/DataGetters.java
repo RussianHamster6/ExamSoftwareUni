@@ -59,7 +59,7 @@ public class DataGetters implements IDataGetters {
         if (inputString.toLowerCase() == "question"
                 || inputString.toLowerCase() == "user"
                 || inputString.toLowerCase() == "test"
-                || inputString.toLowerCase() == "qbank"
+                || inputString.toLowerCase() == "answer"
                 || inputString.toLowerCase() == "testresult"
                 ){
             return true;

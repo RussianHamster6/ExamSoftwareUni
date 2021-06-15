@@ -123,7 +123,7 @@ public class TestResultView {
                         test.questionList = (ArrayList<Integer>) questionArrayList;
                     }
                     testView.setCurTest(test);
-                    testView.setCurUser(new User(1, "staff", "user", true));
+                    testView.setCurUser(new User(TRTable.getSelectionModel().getSelectedItem().stuNum, "staff", "user", true));
                     navigator.changeSceneWithClass(stage, "performTestView", testView);
                 }
                 else{
