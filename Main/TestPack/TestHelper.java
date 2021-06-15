@@ -77,6 +77,7 @@ public class TestHelper implements ITestHelper{
                         } else {
                             stuList = (stuList + "," + stuToAdd);
                         }
+                        c.close();
                         return stuList;
                     } else {
                         Alert alert = new Alert(Alert.AlertType.ERROR, "The user ID you entered is for a Staff member");

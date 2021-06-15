@@ -46,7 +46,6 @@ public class Navigator implements INavigator{
         }
     }
 
-    //Needs implementing later, need to do a load while passing an object to the new controller
     public void changeSceneWithClass(Stage curStage, String stageToChange, Object objPassed) {
         try {
             FXMLLoader loader = new FXMLLoader();

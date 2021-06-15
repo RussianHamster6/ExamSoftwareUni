@@ -1,5 +1,7 @@
 package Controllers;
 
+import SqLiteDataHandlers.DataSetters;
+import SqLiteDataHandlers.IDataSetters;
 import TestPack.ITestHelper;
 import TestPack.Test;
 import TestPack.TestHelper;
@@ -26,6 +28,7 @@ public class TestEdit {
     private Test curTest;
     private INavigator navigator;
     private ITestHelper testHelper;
+    private IDataSetters dataSetter;
 
     public void setLocalQuestion(Test test){
         this.curTest = test;
@@ -39,6 +42,7 @@ public class TestEdit {
         setData();
         navigator = new Navigator();
         testHelper = new TestHelper();
+        dataSetter = new DataSetters();
     }
 
     public void addQuestion() throws IOException {
@@ -87,35 +91,21 @@ public class TestEdit {
     }
 
     public void updateTest() throws IOException {
-        Connection c = null;
 
-        try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
-            c.setAutoCommit(false);
-            System.out.println("DBConnected");
-            PreparedStatement statement = c.prepareStatement("Update Test SET " +
-                    "questionList= ?," +
-                    "isManuallyMarked= ?," +
-                    "testName= ?," +
-                    "stuList= ? WHERE testID = ?");
-            statement.setString(1,QIDsText.getText().replaceAll(" ", ""));
-            statement.setInt(2,dataConversions.testConversions.boolToInt(isManMarkedBox.isSelected()));
-            statement.setString(3,descriptionText.getText());
-            statement.setString(4, StuIDsText.getText().replaceAll(" ", ""));
-            statement.setInt(5,curTest.getTestID());
-            statement.execute();
-            c.commit();
-            c.close();
-        } catch ( Exception e ) {
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
+        Boolean success = dataSetter.createNewEntry(
+                "test",
+                "questionList,isManuallyMarked,testName,stuList",
+                QIDsText.getText(),
+                String.valueOf(dataConversions.testConversions.boolToInt(isManMarkedBox.isSelected())),
+                descriptionText.getText(),
+                StuIDsText.getText()
+        );
+
+        if(success) {
+            Stage stage = (Stage) QIDsText.getScene().getWindow();
+            navigator.changeScene(stage, "testView");
         }
-        System.out.println("Should have pushed data");
 
-
-        Stage stage = (Stage) QIDsText.getScene().getWindow();
-        navigator.changeScene(stage,"testView");
     }
 
     private void setData(){

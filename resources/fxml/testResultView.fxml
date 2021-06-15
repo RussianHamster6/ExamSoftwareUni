@@ -7,7 +7,7 @@
 
 <AnchorPane prefHeight="351.0" prefWidth="502.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.TestResultView">
    <children>
-      <TableView fx:id="TRTable" layoutX="20.0" layoutY="64.0"  prefHeight="272.0" prefWidth="470.0">
+      <TableView fx:id="TRTable" layoutX="20.0" onMouseClicked="#markQuestion" layoutY="64.0"  prefHeight="272.0" prefWidth="470.0">
         <columns>
           <TableColumn id="ResultIDCol" fx:id="ResultIDCol" prefWidth="75.0" text="ResultID" />
           <TableColumn id="StudentIDCol" fx:id="StudentIDCol" prefWidth="75.0" text="Student ID" />

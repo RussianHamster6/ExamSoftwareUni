@@ -2,15 +2,25 @@ package Controllers;
 
 import SqLiteDataHandlers.DataGetters;
 import SqLiteDataHandlers.IDataGetters;
+import javafx.scene.control.Alert;
+import navigator.*;
+import TestPack.Test;
 import TestPack.TestResult;
+import UserDetails.User;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.function.Predicate;
 
 public class TestResultView {
@@ -34,6 +44,7 @@ public class TestResultView {
     private ObservableList<TestResult> TRList;
 
     private IDataGetters dataGetter;
+    private INavigator navigator;
 
     public void initialize(){
 
@@ -42,6 +53,7 @@ public class TestResultView {
         });
 
         dataGetter = new DataGetters();
+        navigator = new Navigator();
 
         try {
             ResultIDCol.setCellValueFactory(new PropertyValueFactory<>("resultId"));
@@ -57,7 +69,7 @@ public class TestResultView {
             c.setAutoCommit(true);
             System.out.println("Opened database successfully");
 
-            ResultSet rs = dataGetter.getAll("TestResult;",c);
+            ResultSet rs = dataGetter.getAll("TestResult",c);
 
             while (rs.next()){
                 TestResult TRToAdd = new TestResult(rs.getInt("resultId"),
@@ -82,6 +94,47 @@ public class TestResultView {
         catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             System.exit(0);
+        }
+    }
+
+    public void markQuestion(MouseEvent event) throws SQLException {
+        if (event.getClickCount() > 1 && TRTable.getSelectionModel().getSelectedItem().getFinalScore() == 0) {
+            Stage stage = (Stage) TRTable.getScene().getWindow();
+            PerformTestView testView = new PerformTestView();
+            int TestId = TRTable.getSelectionModel().getSelectedItem().getTestId();
+            try {
+                Connection c = null;
+                Class.forName("org.sqlite.JDBC");
+                c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
+                c.setAutoCommit(true);
+
+                ResultSet result = dataGetter.getAllByCol("test", "testID", String.valueOf(TestId), c);
+                if (result.next()) {
+                    Test test = new Test(result.getInt("TestID"),
+                            dataConversions.testConversions.intToBool(result.getInt("isManuallyMarked")),
+                            result.getString("testName"));
+                    if (!result.getString("stuList").isEmpty() && result.getString("stuList") != null) {
+                        String[] questionList = (result.getString("questionList").split(","));
+                        ArrayList<Integer> questionArrayList = new ArrayList<Integer>();
+                        for (int i = 0; i < questionList.length; i++) {
+                            String num = questionList[i];
+                            questionArrayList.add(Integer.parseInt(num));
+                        }
+                        test.questionList = (ArrayList<Integer>) questionArrayList;
+                    }
+                    testView.setCurTest(test);
+                    testView.setCurUser(new User(1, "staff", "user", true));
+                    navigator.changeSceneWithClass(stage, "performTestView", testView);
+                }
+                else{
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Something went wrong");
+                    alert.showAndWait();
+                }
+                c.close();
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 

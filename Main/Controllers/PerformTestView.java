@@ -106,6 +106,7 @@ public class PerformTestView {
                 loader.setLocation(PerformTestView.class.getResource("/fxml/arithmeticQuestionTab.fxml"));
                 newTab.setContent(loader.load());
                 newTab.setText("Question " + (testTabPane.getTabs().size() + 1));
+                newTab.getContent().lookup("#correctAnswerCheckBox").setVisible(curUser.getIsEmployee());
                 testTabPane.getTabs().add(newTab);
                 Label qLabel =(Label) testTabPane.lookup("#questionLabel");
                 qLabel.setId("");
@@ -118,10 +119,23 @@ public class PerformTestView {
                 loaderMulti.setLocation(PerformTestView.class.getResource("/fxml/multiChoiceQuestion.fxml"));
                 newTabMulti.setContent(loaderMulti.load());
                 newTabMulti.setText("Question " + (testTabPane.getTabs().size() + 1));
+                newTabMulti.getContent().lookup("#correctAnswerCheckBox").setVisible(curUser.getIsEmployee());
                 testTabPane.getTabs().add(newTabMulti);
                 Label qLabelMulti =(Label) testTabPane.lookup("#questionLabel");
                 qLabelMulti.setId("");
                 qLabelMulti.setText(qToLoad.getDescription());
+                break;
+            case essay:
+                Tab newTabEssay = new Tab();
+                FXMLLoader loaderEssay = new FXMLLoader();
+                loaderEssay.setLocation(PerformTestView.class.getResource("/fxml/essayQuestionTab.fxml"));
+                newTabEssay.setContent(loaderEssay.load());
+                newTabEssay.setText("Question " + (testTabPane.getTabs().size() + 1));
+                newTabEssay.getContent().lookup("#correctAnswerCheckBox").setVisible(true);
+                testTabPane.getTabs().add(newTabEssay);
+                Label qLabelEssay =(Label) testTabPane.lookup("#questionLabel");
+                qLabelEssay.setId("");
+                qLabelEssay.setText(qToLoad.getDescription());
                 break;
         }
     }
@@ -133,61 +147,120 @@ public class PerformTestView {
         AtomicInteger score = new AtomicInteger();
         score.set(0);
 
-        tabList.forEach(T -> {
-            Question currentQ = QList.get(i.get());
+        if(!getCurTest().isManuallyMarked) {
+            tabList.forEach(T -> {
+                Question currentQ = QList.get(i.get());
 
-            switch (currentQ.getQType()){
-                case aritmetic:
-                    var ansField = T.getContent().lookup("#answerField");
-                    TextField ansFieldText = (TextField) ansField;
-                    String givenAns = ansFieldText.getText().toLowerCase().trim();
-                    String actualAns = QList.get(i.get()).getAnswer().toLowerCase().trim();
-                    if(givenAns.equals(actualAns)){
-                        score.set(score.get() + QList.get(i.get()).getPoints());
-                    }
-                    i.getAndIncrement();
-                    break;
-                case multiChoice:
-                    var radioButtons = T.getContent().lookupAll(".radio-button").toArray();
-                    Boolean flag = false;
-                    for (int ind = 0; ind < radioButtons.length && flag == false; ind++) {
-                        RadioButton rb = (RadioButton) radioButtons[ind];
-                        if(rb.isSelected()){
-                            flag = true;
-                            if(rb.getText().equals(QList.get(i.get()).getAnswer())) {
-                                score.set(score.get() + QList.get(i.get()).getPoints());
+                switch (currentQ.getQType()) {
+                    case aritmetic:
+                        var ansField = T.getContent().lookup("#answerField");
+                        TextField ansFieldText = (TextField) ansField;
+                        String givenAns = ansFieldText.getText().toLowerCase().trim();
+                        String actualAns = QList.get(i.get()).getAnswer().toLowerCase().trim();
+                        if (givenAns.equals(actualAns)) {
+                            score.set(score.get() + QList.get(i.get()).getPoints());
+                        }
+                        i.getAndIncrement();
+                        break;
+                    case multiChoice:
+                        var radioButtons = T.getContent().lookupAll(".radio-button").toArray();
+                        Boolean flag = false;
+                        for (int ind = 0; ind < radioButtons.length && flag == false; ind++) {
+                            RadioButton rb = (RadioButton) radioButtons[ind];
+                            if (rb.isSelected()) {
+                                flag = true;
+                                if (rb.getText().equals(QList.get(i.get()).getAnswer())) {
+                                    score.set(score.get() + QList.get(i.get()).getPoints());
+                                }
                             }
                         }
-                    }
-                    i.getAndIncrement();
-                    break;
+                        i.getAndIncrement();
+                        break;
+                }
+            });
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Your score was: " + score);
+            alert.showAndWait();
+
+            Connection c = null;
+            PreparedStatement statement;
+
+            Boolean success =
+                    dataSetter.createNewEntry(
+                            "testResult",
+                            "testId,stuNumber,finalScore",
+                            String.valueOf(curTest.getTestID())
+                            ,String.valueOf(curUser.getUID())
+                            ,String.valueOf(score.get())
+                    );
+
+            if (success) {
+                Stage stage = (Stage) testTabPane.getScene().getWindow();
+                AvailableTestsView ATV = new AvailableTestsView();
+                ATV.setCurUser(curUser);
+                navigator.changeSceneWithClass(stage,"availableTestsView",ATV);
             }
-        });
-
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Your score was: " + score);
-        alert.showAndWait();
-
-        Connection c = null;
-        PreparedStatement statement;
-
-        Boolean success =
-        dataSetter.createNewEntry(
-                "testResult",
-                "testId,stuNumber,finalScore",
-                String.valueOf(curTest.getTestID())
-                ,String.valueOf(curUser.getUID())
-                ,String.valueOf(score.get())
-        );
-
-        if (success) {
-            Stage stage = (Stage) testTabPane.getScene().getWindow();
-            AvailableTestsView ATV = new AvailableTestsView();
-            ATV.setCurUser(curUser);
-            navigator.changeSceneWithClass(stage,"availableTestsView",ATV);
+            else{
+                Alert alertIssue = new Alert(Alert.AlertType.ERROR, "Something went wrong, please try again");
+                alertIssue.showAndWait();
+            }
         }
-        else{
-            Alert alertIssue = new Alert(Alert.AlertType.ERROR, "Something went wrong, please try again");
-            alertIssue.showAndWait();
+        else {
+            tabList.forEach(T -> {
+                Question currentQ = QList.get(i.get());
+
+                switch (currentQ.getQType()) {
+                    case aritmetic:
+                        var ansField = T.getContent().lookup("#answerField");
+                        TextField ansFieldText = (TextField) ansField;
+                        dataSetter.createNewEntry("Answer","TestID,StudentID,Answer" ,String.valueOf(getCurTest().testID),String.valueOf(currentQ.getQID()),ansFieldText.getText());
+                        break;
+                    case multiChoice:
+                        var radioButtons = T.getContent().lookupAll(".radio-button").toArray();
+                        Boolean flag = false;
+                        for (int ind = 0; ind < radioButtons.length && flag == false; ind++) {
+                            RadioButton rb = (RadioButton) radioButtons[ind];
+                            if (rb.isSelected()) {
+                                flag = true;
+
+                                dataSetter.createNewEntry("Answer","TestID,StudentID,Answer" ,String.valueOf(getCurTest().testID),String.valueOf(currentQ.getQID()),rb.getText());
+                            }
+                        }
+                        i.getAndIncrement();
+                        break;
+                    case essay:
+                        var lookup = T.getContent().lookup("#essayAnswerField");
+                        TextArea essayAnsField = (TextArea) lookup;
+                        dataSetter.createNewEntry("Answer","TestID,StudentID,Answer" ,String.valueOf(getCurTest().testID),String.valueOf(currentQ.getQID()),essayAnsField.getText());
+                }
+            });
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "This test requires manual marking, please see your teacher for your grade");
+            alert.showAndWait();
+
+            Connection c = null;
+            PreparedStatement statement;
+
+            Boolean success =
+                    dataSetter.createNewEntry(
+                            "testResult",
+                            "testId,stuNumber,finalScore",
+                            String.valueOf(curTest.getTestID())
+                            ,String.valueOf(curUser.getUID())
+                            ,""
+                    );
+
+            if (success) {
+                Stage stage = (Stage) testTabPane.getScene().getWindow();
+                AvailableTestsView ATV = new AvailableTestsView();
+                ATV.setCurUser(curUser);
+                navigator.changeSceneWithClass(stage,"availableTestsView",ATV);
+            }
+            else{
+                Alert alertIssue = new Alert(Alert.AlertType.ERROR, "Something went wrong, please try again");
+                alertIssue.showAndWait();
+            }
         }
+
+
     }
 }
