@@ -8,8 +8,6 @@ import TestPack.Test;
 import UserDetails.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import navigator.INavigator;
@@ -20,6 +18,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static QuestionPack.Question.questionType.multiChoice;
 
 public class PerformTestView {
     @FXML
@@ -104,19 +104,81 @@ public class PerformTestView {
                 newTab.setContent(loader.load());
                 newTab.setText("Question " + (testTabPane.getTabs().size() + 1));
                 newTab.getContent().lookup("#correctAnswerCheckBox").setVisible(curUser.getIsEmployee());
-                testTabPane.getTabs().add(newTab);
-                Label qLabel =(Label) testTabPane.lookup("#questionLabel");
-                qLabel.setId("");
-                qLabel.setText(qToLoad.getDescription());
-                break;
-            case multiChoice:
-                Tab newTabMulti = new Tab();
+                if(newTab.getContent().lookup("#correctAnswerCheckBox").isVisible()) {
+                    try {
+                        Connection c = null;
+                        Class.forName("org.sqlite.JDBC");
+                        c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
+                        c.setAutoCommit(false);
 
-                FXMLLoader loaderMulti = new FXMLLoader();
-                loaderMulti.setLocation(PerformTestView.class.getResource("/fxml/multiChoiceQuestion.fxml"));
-                newTabMulti.setContent(loaderMulti.load());
-                newTabMulti.setText("Question " + (testTabPane.getTabs().size() + 1));
-                newTabMulti.getContent().lookup("#correctAnswerCheckBox").setVisible(curUser.getIsEmployee());
+                        String statementStr = "Select * from answer Where TestID = " + String.valueOf(getCurTest().getTestID());
+                        Statement statement = c.createStatement();
+                        ResultSet answer = statement.executeQuery(statementStr);
+
+                        while (answer.next()) {
+                            if (answer.getInt("StudentID") == getCurUser().getUID() && answer.getInt("QuestionID") == qToLoad.getQID()) {
+                                String answerGiven = answer.getString("Answer");
+                                TextField answerField = (TextField) newTab.getContent().lookup("#answerField");
+                                answerField.setText(answerGiven);
+                            }
+                        }
+                        c.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                    testTabPane.getTabs().add(newTab);
+                    Label qLabel = (Label) testTabPane.lookup("#questionLabel");
+                    qLabel.setId("");
+                    qLabel.setText(qToLoad.getDescription());
+                    break;
+                    case multiChoice:
+                        Tab newTabMulti = new Tab();
+
+                        FXMLLoader loaderMulti = new FXMLLoader();
+                        loaderMulti.setLocation(PerformTestView.class.getResource("/fxml/multiChoiceQuestion.fxml"));
+                        newTabMulti.setContent(loaderMulti.load());
+                        newTabMulti.setText("Question " + (testTabPane.getTabs().size() + 1));
+                        newTabMulti.getContent().lookup("#correctAnswerCheckBox").setVisible(curUser.getIsEmployee());
+                        if (newTabMulti.getContent().lookup("#correctAnswerCheckBox").isVisible()) {
+                            try {
+                                Connection c = null;
+                                Class.forName("org.sqlite.JDBC");
+                                c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
+                                c.setAutoCommit(false);
+
+                                String statementStr = "Select * from answer Where TestID = " + String.valueOf(getCurTest().getTestID());
+                                Statement statement = c.createStatement();
+                                ResultSet answer = statement.executeQuery(statementStr);
+
+                                while (answer.next()) {
+                                    if (answer.getInt("StudentID") == getCurUser().getUID() && answer.getInt("QuestionID") == qToLoad.getQID()) {
+                                        String answerGiven = answer.getString("Answer");
+                                        switch (answerGiven) {
+                                            case "A":
+                                                RadioButton buttonA = (RadioButton) newTabMulti.getContent().lookup("#A");
+                                                buttonA.setSelected(true);
+                                                break;
+                                            case "B":
+                                                RadioButton buttonB = (RadioButton) newTabMulti.getContent().lookup("#B");
+                                                buttonB.setSelected(true);
+                                                break;
+                                            case "C":
+                                                RadioButton buttonC = (RadioButton) newTabMulti.getContent().lookup("#C");
+                                                buttonC.setSelected(true);
+                                                break;
+                                            case "D":
+                                                RadioButton buttonD = (RadioButton) newTabMulti.getContent().lookup("#D");
+                                                buttonD.setSelected(true);
+                                                break;
+                                        }
+                                    }
+                                }
+                                c.close();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
                 testTabPane.getTabs().add(newTabMulti);
                 Label qLabelMulti =(Label) testTabPane.lookup("#questionLabel");
                 qLabelMulti.setId("");
@@ -128,7 +190,7 @@ public class PerformTestView {
                 loaderEssay.setLocation(PerformTestView.class.getResource("/fxml/essayQuestionTab.fxml"));
                 newTabEssay.setContent(loaderEssay.load());
                 newTabEssay.setText("Question " + (testTabPane.getTabs().size() + 1));
-                newTabEssay.getContent().lookup("#correctAnswerCheckBox").setVisible(true);
+                newTabEssay.getContent().lookup("#correctAnswerCheckBox").setVisible(curUser.getIsEmployee());
                 if(newTabEssay.getContent().lookup("#correctAnswerCheckBox").isVisible()){
                     try {
                         Connection c = null;
@@ -234,6 +296,7 @@ public class PerformTestView {
                         var ansField = T.getContent().lookup("#answerField");
                         TextField ansFieldText = (TextField) ansField;
                         dataSetter.createNewEntry("Answer","TestID,StudentID,Answer,QuestionID" ,String.valueOf(getCurTest().testID),String.valueOf(curUser.getUID()),ansFieldText.getText(),String.valueOf(currentQ.getQID()));
+                        i.getAndIncrement();
                         break;
                     case multiChoice:
                         var radioButtons = T.getContent().lookupAll(".radio-button").toArray();
@@ -243,7 +306,7 @@ public class PerformTestView {
                             if (rb.isSelected()) {
                                 flag = true;
 
-                                dataSetter.createNewEntry("Answer","TestID,StudentID,Answer,QuestionID" ,String.valueOf(getCurTest().testID),String.valueOf(currentQ.getQID()),rb.getText(),String.valueOf(currentQ.getQID()));
+                                dataSetter.createNewEntry("Answer","TestID,StudentID,Answer,QuestionID" ,String.valueOf(getCurTest().testID),String.valueOf(curUser.getUID()),rb.getText(),String.valueOf(currentQ.getQID()));
                             }
                         }
                         i.getAndIncrement();
@@ -251,7 +314,8 @@ public class PerformTestView {
                     case essay:
                         var lookup = T.getContent().lookup("#essayAnswerField");
                         TextArea essayAnsField = (TextArea) lookup;
-                        dataSetter.createNewEntry("Answer","TestID,StudentID,Answer,QuestionID" ,String.valueOf(getCurTest().testID),String.valueOf(currentQ.getQID()),essayAnsField.getText(),String.valueOf(currentQ.getQID()));
+                        dataSetter.createNewEntry("Answer","TestID,StudentID,Answer,QuestionID" ,String.valueOf(getCurTest().testID),String.valueOf(curUser.getUID()),essayAnsField.getText(),String.valueOf(currentQ.getQID()));
+                        i.getAndIncrement();
                         break;
                 }
             });

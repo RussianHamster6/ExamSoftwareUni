@@ -12,13 +12,13 @@
            <ToggleGroup fx:id="group" />
        </fx:define>
       <Label fx:id="questionLabel" layoutX="62.0" layoutY="58.0" text="Placeholder text for Question" />
-      <RadioButton layoutX="412.0" layoutY="175.0" mnemonicParsing="false" text="A">
+      <RadioButton layoutX="412.0" layoutY="175.0" mnemonicParsing="false" text="A" fx:id="A">
          <toggleGroup>
             <ToggleGroup fx:id="group" />
          </toggleGroup></RadioButton>
-      <RadioButton layoutX="412.0" layoutY="200.0" mnemonicParsing="false" text="B" toggleGroup="$group" />
-      <RadioButton layoutX="412.0" layoutY="226.0" mnemonicParsing="false" text="C" toggleGroup="$group" />
-      <RadioButton layoutX="412.0" layoutY="251.0" mnemonicParsing="false" text="D" toggleGroup="$group" />
+      <RadioButton layoutX="412.0" layoutY="200.0" mnemonicParsing="false" text="B" toggleGroup="$group" fx:id="B"/>
+      <RadioButton layoutX="412.0" layoutY="226.0" mnemonicParsing="false" text="C" toggleGroup="$group" fx:id="C"/>
+      <RadioButton layoutX="412.0" layoutY="251.0" mnemonicParsing="false" text="D" toggleGroup="$group" fx:id="D"/>
       <CheckBox fx:id="correctAnswerCheckBox" layoutX="404.0" layoutY="321.0" mnemonicParsing="false" text="Correct" visible="false" />
    </children>
 </AnchorPane>
