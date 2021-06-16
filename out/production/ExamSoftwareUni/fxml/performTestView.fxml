@@ -4,10 +4,10 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
 <AnchorPane prefHeight="441.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <TabPane fx:id="testTabPane" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" />
       <Button layoutX="270.0" layoutY="402.0" mnemonicParsing="false" onAction="#endTest" text="End Test" />
+      <Button fx:id="markTestButton" layoutX="404.0" layoutY="402.0" onAction="#manuallyMarkTest" mnemonicParsing="false" prefHeight="25.0" prefWidth="143.0" text="Submit all Test Marks" visible="false" />
    </children>
 </AnchorPane>

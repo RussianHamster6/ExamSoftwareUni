@@ -92,8 +92,8 @@ public class TestResultView {
             c.close();
         }
         catch ( Exception e ) {
+            e.printStackTrace();
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
         }
     }
 
@@ -124,6 +124,7 @@ public class TestResultView {
                     }
                     testView.setCurTest(test);
                     testView.setCurUser(new User(TRTable.getSelectionModel().getSelectedItem().stuNum, "staff", "user", true));
+                    testView.setResultID(TRTable.getSelectionModel().getSelectedItem().getResultId());
                     navigator.changeSceneWithClass(stage, "performTestView", testView);
                 }
                 else{

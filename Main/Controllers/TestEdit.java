@@ -112,9 +112,9 @@ public class TestEdit {
         Test test = getCurTest();
         descriptionText.setText(test.testName);
         isManMarkedBox.setSelected(test.isManuallyMarked);
-        String questions = test.questionList.toString().replaceAll("\\[", "").replaceAll("\\]","");
+        String questions = test.questionList.toString().replaceAll("\\[", "").replaceAll("\\]","").replaceAll(" ","");
         QIDsText.setText(questions);
-        String students = test.stuList.toString().replaceAll("\\[", "").replaceAll("\\]","");
+        String students = test.stuList.toString().replaceAll("\\[", "").replaceAll("\\]","").replaceAll(" ","");
         StuIDsText.setText(students);
     }
 

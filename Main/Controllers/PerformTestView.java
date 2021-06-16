@@ -24,9 +24,12 @@ import static QuestionPack.Question.questionType.multiChoice;
 public class PerformTestView {
     @FXML
     TabPane testTabPane;
+    @FXML
+    Button markTestButton;
 
     Test curTest;
     User curUser;
+    Integer resultID;
     ArrayList<Question> QList;
 
     private IDataSetters dataSetter;
@@ -49,6 +52,8 @@ public class PerformTestView {
         this.curTest = curTest;
     }
 
+    public void setResultID(Integer itgr) {this.resultID = itgr;}
+
     public void initialize(){
         dataGetters = new DataGetters();
         dataSetter = new DataSetters();
@@ -56,6 +61,10 @@ public class PerformTestView {
         //Get list of question IDs from Test
         ArrayList<Integer> QIDList = this.getCurTest().questionList;
         QList = new ArrayList<Question>();
+
+        if(curUser.getIsEmployee()){
+            markTestButton.setVisible(true);
+        }
 
         QIDList.forEach(Q -> {
             Connection c = null;
@@ -347,6 +356,45 @@ public class PerformTestView {
             }
         }
 
+    }
+    public void manuallyMarkTest(){
+        AtomicInteger score = new AtomicInteger();
+        AtomicInteger index = new AtomicInteger();
+        score.set(0);
+        index.set(0);
+        var tabList = testTabPane.getTabs();
+        tabList.forEach(T -> {
+                CheckBox checkBox =(CheckBox) T.getContent().lookup("#correctAnswerCheckBox");
 
+                if(checkBox.isSelected()) {
+                    Question curQ = QList.get(index.get());
+                    score.set(score.get() + curQ.getPoints());
+                }
+                index.getAndIncrement();
+        });
+
+        Test curTest = getCurTest();
+
+        Connection c = null;
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite::resource:database/ExamSoftware.db");
+            c.setAutoCommit(false);
+            System.out.println("DBConnected");
+            PreparedStatement statement = c.prepareStatement("Update testResult SET finalScore = ? WHERE resultID = ?");
+            statement.setString(1,String.valueOf(score.get()));
+            statement.setString(2,String.valueOf(this.resultID));
+            statement.execute();
+            c.commit();
+            c.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.exit(0);
+        }
+        System.out.println("Should have pushed data");
+
+        Stage stage = (Stage) testTabPane.getScene().getWindow();
+        navigator.changeScene(stage,"TestResultView");
     }
 }
