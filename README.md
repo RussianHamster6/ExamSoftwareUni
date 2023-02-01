@@ -1,5 +1,5 @@
 # ExamSoftwareUni
-A solution designed for my CW1 and potentially CW2 for my Object Orientated Programming module at uni
+A solution designed for my CW1 and CW2 for my Object Orientated Programming module at uni
 
 To ensure that this solution builds there is a couple steps to take. 
 
